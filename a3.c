@@ -6,10 +6,15 @@
 
 // #include directives
 ////////////////////////////////////////////////////////////////////////////////
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+/*#include <curses.h>*/
 ////////////////////////////////////////////////////////////////////////////////
 
 // #define directives
 ////////////////////////////////////////////////////////////////////////////////
+#define MAX_TASK_LENGTH 4
 ////////////////////////////////////////////////////////////////////////////////
 
 // custom data types
@@ -22,10 +27,48 @@
 
 // function prototypes
 ////////////////////////////////////////////////////////////////////////////////
+void clear_screen();
+int task_queue();
 ////////////////////////////////////////////////////////////////////////////////
 
 // functions
 ////////////////////////////////////////////////////////////////////////////////
+void clear_screen() {
+    // Description
+    // TODO
+    // http://stackoverflow.com/q/1348563
+    // http://stackoverflow.com/q/2347770
+    //
+    // Returns
+    // clear_screen does not return any value.
+
+    // variable declaration
+    //const char *cls_ansi_string = "\e[1;1H\e[2J";
+
+    //printf("%s", cls_ansi_string);
+
+    printf("\e[1;1H\e[2J");
+}
+
+int task_queue() {
+    // Description
+    // TODO
+    //
+    // Returns
+    // task_queue returns 0 on successful completion or -1 in case of failure.
+
+    // variable declaration
+    char task[MAX_TASK_LENGTH + 1];  // task code
+
+    // Clear the screen.
+    // TODO Maybe implement with ncurses.
+    /*clear_screen();*/
+
+    // Print a welcome message.
+    printf("\tSCEE signal controlled execution environment\n\n");
+
+    return 0;
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 // main function
@@ -38,6 +81,8 @@ int main(int argc, char *argv[]) {
     // main returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+
+    task_queue();
 
     return 0;
 }
