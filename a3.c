@@ -2,6 +2,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Description
 // TODO
+//
+// TODO Implement list manipulation functions. Some tasks that come to mind:
+// create, search, add element, remove element. The list should include
+// a sentinel.
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
@@ -29,6 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 void clear_screen();
 int task_queue();
+int get_task(char *task);
 ////////////////////////////////////////////////////////////////////////////////
 
 // functions
@@ -67,8 +72,49 @@ int task_queue() {
     // Print a welcome message.
     printf("\tSCEE signal controlled execution environment\n\n");
 
+    strcpy(task, "");
+    while (strcmp(task, "quit")) {
+        return_value = get_task(task);
+        if (return_value == -1) {
+            // TODO Research error checking with macros.
+            perror("get_task error");
+        }
+
+        if (!strcmp(task, "exec")) {
+            process_exec();
+        } else if (!strcmp(task, "kill")) {
+            process_kill();
+        } else if (!strcmp(task, "stop")) {
+            process_stop();
+        } else if (!strcmp(task, "cont")) {
+            process_cont();
+        } else if (!strcmp(task, "list")) {
+            process_list();
+        } else if (!strcmp(task, "info")) {
+            process_info();
+        } else {
+            printf("No valid task requested.");
+        }
+    }
+
     return 0;
 }
+
+void process_exec(char *progname, (char *)NULL) {
+    // TODO or execv
+    execl
+}
+
+process_kill();
+
+process_stop();
+
+process_cont();
+
+process_list();
+
+process_info();
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // main function

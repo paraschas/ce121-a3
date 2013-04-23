@@ -16,6 +16,3 @@ students
 ========
 Dimitrios Paraschas
 1562
-
-Paraskevas Lazaridis
-1653
