@@ -58,12 +58,11 @@ void clear_screen() {
 }
 
 int get_input(int *num_elements, char *elements[]) {
-
     return 0;
 }
 
-void process_exec(char *progname, (char *)NULL) {
-    /*return_value = execv*/
+void process_exec(char *child_argv[]) {
+    //return_value = execv
 }
 
 int process_kill() {
@@ -100,13 +99,12 @@ int task_queue() {
     // variable declaration
     char task[MAX_TASK_LENGTH + 1];  // task code
     int num_elements;
-    char *elements[];
-    int return_value;
-    /*char *return_value;  // placeholder pointer for error checking*/
+    char **elements;
+    //char *return_value;  // placeholder pointer for error checking
     int return_value;  // integer placeholder for error checking
 
     // Clear the screen.
-    /*clear_screen();*/
+    //clear_screen();
 
     // Print a welcome message.
     printf("\tSCEE signal controlled execution environment\n\n");
@@ -115,14 +113,16 @@ int task_queue() {
 
     strcpy(task, "");
     while (strcmp(task, "quit")) {
-        return_value = get_input(num_elements, elements);
+        return_value = get_input(&num_elements, elements);
+        // TODO Check get_input return value.
+
         if (return_value == -1) {
             // TODO Research error checking with macros.
             perror("get_task error");
         }
 
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
-            process_exec();
+            process_exec(elements);
         } else if (!strcmp(task, "kill") || !strcmp(task, "k")) {
             process_kill();
         } else if (!strcmp(task, "stop") || !strcmp(task, "s")) {
