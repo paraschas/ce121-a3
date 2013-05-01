@@ -86,6 +86,10 @@ int process_info() {
     return 0;
 }
 
+int process_quit() {
+    return 0;
+}
+
 int task_queue() {
     // Description
     // TODO
@@ -130,7 +134,7 @@ int task_queue() {
         } else if (!strcmp(task, "info") || !strcmp(task, "i")) {
             process_info();
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
-            process_info();
+            process_quit();
         } else {
                 printf("No valid task requested.");
         }
