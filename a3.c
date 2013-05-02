@@ -32,13 +32,88 @@
 
 // function prototypes
 ////////////////////////////////////////////////////////////////////////////////
+int get_input(char **input, const int max_length);
 void clear_screen();
 int task_queue();
-int get_task(char *task);
+int get_task(char **arguments);
 ////////////////////////////////////////////////////////////////////////////////
 
 // functions
 ////////////////////////////////////////////////////////////////////////////////
+int get_input(char **input, const int max_length) {
+    // Description
+    // This function reads a raw input line from stdin. The input should
+    // be at most of length max_length. It is stored in a dynamically allocated
+    // string and a pointer to this string is stored in input. If the length of
+    // the input exceeds max_length, the value of input is not changed.
+    //
+    // Returns
+    // get_input returns the length of the input read which could be equal to 0,
+    // -1 in case of failure, or if the length of the input exceeded max_length.
+
+    // variable declaration
+    char *temp_input;
+    size_t buffer_size;
+    int input_length;
+    int return_value;  // integer placeholder for error checking
+    void *return_pointer;  // pointer placeholder for error checking
+
+    temp_input = NULL;
+    buffer_size = 0;  // TODO Is it a good practice to include a cast here?
+            // "buffer_size = (size_t)0;"
+
+    return_value = getline(&temp_input, &buffer_size, stdin);
+    if (return_value == -1) {
+        perror("error, getline");
+        return -1;
+    }
+
+    // Store the input length.
+    input_length = strlen(temp_input);
+
+    // Verify that an entire line, terminating in a newline character, was read.
+    if (temp_input[input_length - 1] != '\n') {
+        printf("Error, getline didn't read an entire line.\n");
+
+        free(temp_input);
+        return -1;
+    }
+
+    // Remove the trailing newline character.
+    temp_input[input_length - 1] = '\0';
+
+    // Update the input length.
+    input_length = strlen(temp_input);
+
+    // The input length should be at most equal to max_length.
+    if (input_length > max_length) {
+        printf("Error, the input was too long.");
+        printf(" Input length: %d", input_length);
+        printf(" Maximum permitted length: %d\n", max_length);
+
+        free(temp_input);
+        return -1;
+    }
+
+    // Reallocate the temp_input char array so that its size is reduced by
+    // one byte, previously occupied by the trailing newline character.
+    return_pointer = (char *)realloc(temp_input,
+            (size_t)((input_length + 1) * sizeof(*temp_input)));
+    if (return_pointer == NULL) {
+        perror("error, realloc");
+
+        free(temp_input);
+        return -1;
+    } else {
+        temp_input = return_pointer;
+    }
+
+    // Store a pointer of the input string to input.
+    *input = temp_input;
+
+    return input_length;
+}
+
 void clear_screen() {
     // Description
     // TODO
@@ -57,7 +132,7 @@ void clear_screen() {
     printf("\e[1;1H\e[2J");
 }
 
-int get_input(int *num_elements, char *elements[]) {
+int get_task(char **arguments) {
     return 0;
 }
 
@@ -97,10 +172,8 @@ int task_queue() {
     // task_queue returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    char **arguments;
     char task[MAX_TASK_LENGTH + 1];  // task code
-    int num_elements;
-    char **elements;
-    //char *return_value;  // placeholder pointer for error checking
     int return_value;  // integer placeholder for error checking
 
     // Clear the screen.
@@ -113,16 +186,17 @@ int task_queue() {
 
     strcpy(task, "");
     while (strcmp(task, "quit")) {
-        return_value = get_input(&num_elements, elements);
-        // TODO Check get_input return value.
+        arguments = NULL;
+        return_value = get_task(arguments);
+        // TODO Check get_task return value.
 
         if (return_value == -1) {
             // TODO Research error checking with macros.
-            perror("get_task error");
+            printf("error, get_task");
         }
 
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
-            process_exec(elements);
+            process_exec(arguments);
         } else if (!strcmp(task, "kill") || !strcmp(task, "k")) {
             process_kill();
         } else if (!strcmp(task, "stop") || !strcmp(task, "s")) {
@@ -138,6 +212,9 @@ int task_queue() {
         } else {
                 printf("No valid task requested.");
         }
+
+        // TODO free allocated memory of the array arguments. Probably write
+        // a function for this.
     }
 
     return 0;
