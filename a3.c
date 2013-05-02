@@ -42,7 +42,7 @@ int get_task(char **arguments);
 ////////////////////////////////////////////////////////////////////////////////
 int get_input(char **input, const int max_length) {
     // Description
-    // This function reads a raw input line from stdin. The input should
+    // This function reads a single line input from stdin. The input should
     // be at most of length max_length. It is stored in a dynamically allocated
     // string and a pointer to this string is stored in input. If the length of
     // the input exceeds max_length, the value of input is not changed.
