@@ -33,6 +33,7 @@
 // function prototypes
 ////////////////////////////////////////////////////////////////////////////////
 int get_input(char **input, const int max_length);
+int str_split(const char *str, char ***tokens, const char *delimiters);
 void clear_screen();
 int task_queue();
 int get_task(char **arguments);
@@ -59,7 +60,7 @@ int get_input(char **input, const int max_length) {
     void *return_pointer;  // pointer placeholder for error checking
 
     temp_input = NULL;
-    buffer_size = 0;  // TODO Is it a good practice to include a cast here?
+    buffer_size = 0;  // NOTE Is it a good practice to include a cast here?
             // "buffer_size = (size_t)0;"
 
     return_value = getline(&temp_input, &buffer_size, stdin);
@@ -87,7 +88,7 @@ int get_input(char **input, const int max_length) {
 
     // The input length should be at most equal to max_length.
     if (input_length > max_length) {
-        printf("Error, the input was too long.");
+        printf("Error, the input was too large.");
         printf(" Input length: %d", input_length);
         printf(" Maximum permitted length: %d\n", max_length);
 
@@ -101,17 +102,109 @@ int get_input(char **input, const int max_length) {
             (size_t)((input_length + 1) * sizeof(*temp_input)));
     if (return_pointer == NULL) {
         perror("error, realloc");
-
         free(temp_input);
         return -1;
     } else {
         temp_input = return_pointer;
     }
 
-    // Store a pointer of the input string to input.
     *input = temp_input;
 
     return input_length;
+}
+
+int str_split(const char *str, char ***tokens, const char *delimiters) {
+    // Description
+    // This function parses the string str, finds the substrings of it
+    // being separated by one or more characters of the delimiters string,
+    // stores them in dynamically allocated memory, and stores pointers to them
+    // in the array tokens, which is also dynamically allocated. A terminating
+    // NULL pointer is appended to tokens, cast to (char *).
+    //
+    // Returns
+    // str_split returns the number of tokens found in str which could be
+    // equal to 0, or -1 in case of failure.
+
+    // variable declaration
+    int num_elements;  // number of elements added to tokens
+    char *str_copy;  // dynamically allocated copy of the string str
+    char *token;  // pointer to token returned by strtok
+    char **temp_tokens;
+    void *return_pointer;  // pointer placeholder for error checking
+    int i;  // generic counter
+
+    // str and delimiters should point to char arrays.
+    if ((str == NULL) || (delimiters == NULL)) {
+        return -1;
+    }
+
+    // Copy the initial string to avoid its mutation.
+    return_pointer = strdup(str);
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        return -1;
+    } else {
+        str_copy = return_pointer;
+    }
+
+    // Find tokens and store them in a dynamically allocated strings.
+    // Store pointers to these strings in the tokens array.
+    num_elements = 0;
+    temp_tokens = NULL;
+    do {
+        if (num_elements == 0) {
+            // Initial call of strtok.
+            token = strtok(str_copy, delimiters);
+        } else {
+            // Subsequent calls of strtok.
+            token = strtok(NULL, delimiters);
+        }
+
+        // Allocate memory for a new element in temp_tokens.
+        num_elements++;
+        return_pointer = (char **)realloc(temp_tokens,
+                (size_t)(num_elements * sizeof(char **)));
+        if (return_pointer == NULL) {
+            perror("error, realloc");
+
+            // Memory deallocation.
+            for (i = 0; temp_tokens[i] != NULL; i++) {
+                free(temp_tokens[i]);
+            }
+            free(temp_tokens);
+
+            return -1;
+        } else {
+            temp_tokens = return_pointer;
+        }
+        temp_tokens[num_elements - 1] = NULL;
+
+        // Store the token found in a dynamically allocated string.
+        if (token != NULL) {
+            return_pointer = strdup(token);
+            if (return_pointer == NULL) {
+                perror("error, strdup");
+
+                // Memory deallocation.
+                for (i = 0; temp_tokens[i] != NULL; i++) {
+                    free(temp_tokens[i]);
+                }
+                free(temp_tokens);
+
+                return -1;
+            } else {
+                token = return_pointer;
+            }
+        }
+
+        // Store a pointer to the token in the temp_tokens array.
+        temp_tokens[num_elements - 1] = token;
+
+    } while (temp_tokens[num_elements - 1] != NULL);
+
+    *tokens = temp_tokens;
+
+    return (num_elements - 1);
 }
 
 void clear_screen() {
