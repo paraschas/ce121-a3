@@ -209,7 +209,8 @@ int str_split(const char *str, char ***tokens, const char *delimiters) {
 
 void clear_screen() {
     // Description
-    // TODO
+    // This function clears the terminal screen and places the cursor in
+    // the position (1,1)
     // http://stackoverflow.com/q/1348563
     // http://stackoverflow.com/q/2347770
     //
