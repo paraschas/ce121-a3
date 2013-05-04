@@ -19,7 +19,13 @@
 // #define directives
 ////////////////////////////////////////////////////////////////////////////////
 #define MAX_TASK_LENGTH 4
-#define MAX_INPUT_LENGTH 1024
+#define MAX_INPUT_LENGTH 512
+
+// http://stackoverflow.com/a/3219471
+// http://en.wikipedia.org/wiki/ANSI_escape_code
+#define ANSI_RED "\x1b[31m"
+#define ANSI_BOLD "\x1b[1m"
+#define ANSI_RESET "\x1b[0m"
 ////////////////////////////////////////////////////////////////////////////////
 
 // custom data types
@@ -227,29 +233,45 @@ void clear_screen() {
 void process_exec() {
 /*void process_exec(char *child_argv[]) {*/
     //return_value = execv
+    printf("process_exec called\n");
+    // TODO Create a new process.
 }
 
 int process_kill() {
+    printf("process_kill called\n");
+    // TODO Send a signal to kill a process.
     return 0;
 }
 
 int process_stop() {
+    printf("process_stop called\n");
+    // TODO Send a signal to stop a running process.
     return 0;
 }
 
 int process_cont() {
+    printf("process_cont called\n");
+    // TODO Send a signal to resume a stopped process.
     return 0;
 }
 
 int process_list() {
+    printf("process_list called\n");
+    // TODO printf a list of the processes, including for each process its PID,
+    // the path used to run the program (even better the stripped name of it),
+    // and its status.
     return 0;
 }
 
 int process_info() {
+    printf("process_info called\n");
+    // TODO printf information about the process.
     return 0;
 }
 
 int process_quit() {
+    printf("process_quit called\n");
+    // TODO kill all processes.
     return 0;
 }
 
@@ -261,33 +283,48 @@ int task_queue() {
     // task_queue returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
-    /*char ***input;*/
-    char task[MAX_TASK_LENGTH + 1];  // task code
-    /*int return_value;  // integer placeholder for error checking*/
-
-    // Clear the screen.
-    //clear_screen();
-
-    // Print a welcome message.
-    printf("\tSCEE signal controlled execution environment\n\n");
-
-    // TODO Print the program functions.
+    char *raw_input;
+    char **input;
+    char task[MAX_INPUT_LENGTH + 1];
+    const char space_tab[] = " \t";
+    int return_value;  // integer placeholder for error checking
 
     strcpy(task, "");
-    while (strcmp(task, "quit")) {
-//        get_task();
-//
-//        input = NULL;
-//        return_value = get_input(input);
-//        if (return_value == -1) {
-//            printf("error, get_input\n");
-//        }
-//
-//        arguments = NULL;
-//        return_value = get_input(input);
-//        if (return_value == -1) {
-//            printf("error, get_input\n");
-//        }
+    while (strcmp(task, "quit") && strcmp(task, "q")) {
+        // TODO Clear the screen.
+        /*clear_screen();*/
+
+        // Print a welcome message.
+        printf(ANSI_BOLD "SCEE" ANSI_RESET " - ");
+        printf(ANSI_RED "Signal Controlled Execution Environment" ANSI_RESET);
+        printf("\n\n");
+
+        // TODO Print the program functions.
+        printf("COMMANDS\n\n");
+
+        printf(ANSI_BOLD "exec" ANSI_RESET " <PATH> [arg1] [arg2] ...\n");
+        printf(ANSI_BOLD "kill" ANSI_RESET " <PID>\n");
+        printf(ANSI_BOLD "stop" ANSI_RESET " <PID>\n");
+        printf(ANSI_BOLD "cont" ANSI_RESET " <PID>\n");
+        printf(ANSI_BOLD "list" ANSI_RESET "\n");
+        printf(ANSI_BOLD "info" ANSI_RESET " <PID>\n");
+        printf(ANSI_BOLD "quit" ANSI_RESET "\n");
+        printf("\n");
+        printf("> ");
+
+        raw_input = NULL;
+        return_value = get_input(&raw_input, MAX_INPUT_LENGTH);
+        if (return_value == -1) {
+            printf("error, get_input\n");
+        }
+
+        input = NULL;
+        return_value = str_split(raw_input, &input, space_tab);
+        if (return_value == -1) {
+            printf("error, str_split\n");
+        }
+
+        strcpy(task, input[0]);
 
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
             process_exec();
@@ -304,7 +341,7 @@ int task_queue() {
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
             process_quit();
         } else {
-                printf("No valid task requested.");
+                printf("Invalid command.\n\n");
         }
 
         // TODO free memory
@@ -532,7 +569,9 @@ int main(int argc, char *argv[]) {
 
     // variable declaration
 
-    test_str_split();
+    /*test_str_split();*/
+
+    task_queue();
 
     /*test_all();*/
 
