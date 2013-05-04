@@ -307,7 +307,7 @@ int task_queue() {
                 printf("No valid task requested.");
         }
 
-        // TODO free allocated memory of the array input.
+        // TODO free memory
     }
 
     return 0;
@@ -330,9 +330,11 @@ int test_str_split() {
     char **tokens;
     char *delimiters;
     char **expected_tokens;
-    const char space_tabs[] = " \t";
+    const char space[] = " ";
+    /*const char tab[] = "\t";*/
+    const char space_tab[] = " \t";
     int num_tests;  // number of tests
-    int num_passed;  // number of tests that were passed
+    int num_passed;  // number of tests passed
     int failed;  // boolean indicator that a test failed
     int return_value;  // integer placeholder for error checking
     void *return_pointer;  // pointer placeholder for error checking
@@ -343,20 +345,21 @@ int test_str_split() {
 
     // test 01
     num_tests++;
+    failed = 0;
 
     return_pointer = strdup("a");
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO memory cleanup
+        // TODO free memory
         return -1;
     } else {
         string = return_pointer;
     }
 
-    return_pointer = strdup(space_tabs);
+    return_pointer = strdup(space_tab);
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO memory cleanup
+        // TODO free memory
         return -1;
     } else {
         delimiters = return_pointer;
@@ -367,7 +370,7 @@ int test_str_split() {
             (size_t)(1 * sizeof(*expected_tokens)));
     if (return_pointer == NULL) {
         perror("error, realloc");
-        // TODO memory cleanup
+        // TODO free memory
         return -1;
     } else {
         expected_tokens = return_pointer;
@@ -377,13 +380,12 @@ int test_str_split() {
     return_pointer = strdup("a");
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO memory cleanup
+        // TODO free memory
         return -1;
     } else {
         expected_tokens[0] = return_pointer;
     }
 
-    failed = 0;
     tokens = NULL;
     return_value = str_split(string, &tokens, delimiters);
     if (return_value != -1) {
@@ -396,10 +398,87 @@ int test_str_split() {
             num_passed++;
         }
     }
-    // TODO memory cleanup
+    // TODO free memory
+
+    // test 02
+    num_tests++;
+    failed = 0;
+
+    return_pointer = strdup("a b c");
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        // TODO free memory
+        return -1;
+    } else {
+        string = return_pointer;
+    }
+
+    return_pointer = strdup(space);
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        // TODO free memory
+        return -1;
+    } else {
+        delimiters = return_pointer;
+    }
+
+    expected_tokens = NULL;
+    return_pointer = (char **)realloc(expected_tokens,
+            (size_t)(3 * sizeof(*expected_tokens)));
+    if (return_pointer == NULL) {
+        perror("error, realloc");
+        // TODO free memory
+        return -1;
+    } else {
+        expected_tokens = return_pointer;
+    }
+
+    expected_tokens[0] = NULL;
+    return_pointer = strdup("a");
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        // TODO free memory
+        return -1;
+    } else {
+        expected_tokens[0] = return_pointer;
+    }
+
+    expected_tokens[1] = NULL;
+    return_pointer = strdup("b");
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        // TODO free memory
+        return -1;
+    } else {
+        expected_tokens[1] = return_pointer;
+    }
+
+    expected_tokens[2] = NULL;
+    return_pointer = strdup("c");
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        // TODO free memory
+        return -1;
+    } else {
+        expected_tokens[2] = return_pointer;
+    }
+
+    tokens = NULL;
+    return_value = str_split(string, &tokens, delimiters);
+    if (return_value != -1) {
+        for (i = 0; tokens[i] != NULL; i++) {
+            if (strcmp(tokens[i], expected_tokens[i])) {
+                failed = 1;
+            }
+        }
+        if (!failed) {
+            num_passed++;
+        }
+    }
+    // TODO free memory
 
     if (num_passed == num_tests) {
-        printf("All str_split tests were passed.\n");
+        printf("All str_split tests passed.\n");
         return 0;
     } else {
         printf("At least one str_split test failed.\n");
@@ -417,7 +496,7 @@ int test_all() {
 
     // variable declaration
     int num_tests;  // number of tests
-    int num_passed;  // number of tests that were passed
+    int num_passed;  // number of tests passed
     int return_value;  // integer placeholder for error checking
 
     num_tests = 0;
@@ -432,7 +511,7 @@ int test_all() {
 
     if (num_passed == num_tests) {
         printf("\n");
-        printf("All tests were passed.\n");
+        printf("All tests passed.\n");
         return 0;
     } else {
         printf("\n");
@@ -453,9 +532,9 @@ int main(int argc, char *argv[]) {
 
     // variable declaration
 
-    /*test_str_split();*/
+    test_str_split();
 
-    test_all();
+    /*test_all();*/
 
     return 0;
 }
