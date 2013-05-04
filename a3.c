@@ -35,8 +35,6 @@
 int get_input(char **input, const int max_length);
 int str_split(const char *str, char ***tokens, const char *delimiters);
 void clear_screen();
-int task_queue();
-int get_task(char **arguments);
 ////////////////////////////////////////////////////////////////////////////////
 
 // functions
@@ -226,11 +224,8 @@ void clear_screen() {
     printf("\e[1;1H\e[2J");
 }
 
-int get_task(char **arguments) {
-    return 0;
-}
-
-void process_exec(char *child_argv[]) {
+void process_exec() {
+/*void process_exec(char *child_argv[]) {*/
     //return_value = execv
 }
 
@@ -266,9 +261,9 @@ int task_queue() {
     // task_queue returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
-    char **arguments;
+    /*char ***input;*/
     char task[MAX_TASK_LENGTH + 1];  // task code
-    int return_value;  // integer placeholder for error checking
+    /*int return_value;  // integer placeholder for error checking*/
 
     // Clear the screen.
     //clear_screen();
@@ -280,17 +275,22 @@ int task_queue() {
 
     strcpy(task, "");
     while (strcmp(task, "quit")) {
-        arguments = NULL;
-        return_value = get_task(arguments);
-        // TODO Check get_task return value.
-
-        if (return_value == -1) {
-            // TODO Research error checking with macros.
-            printf("error, get_task");
-        }
+//        get_task();
+//
+//        input = NULL;
+//        return_value = get_input(input);
+//        if (return_value == -1) {
+//            printf("error, get_input\n");
+//        }
+//
+//        arguments = NULL;
+//        return_value = get_input(input);
+//        if (return_value == -1) {
+//            printf("error, get_input\n");
+//        }
 
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
-            process_exec(arguments);
+            process_exec();
         } else if (!strcmp(task, "kill") || !strcmp(task, "k")) {
             process_kill();
         } else if (!strcmp(task, "stop") || !strcmp(task, "s")) {
@@ -307,13 +307,139 @@ int task_queue() {
                 printf("No valid task requested.");
         }
 
-        // TODO free allocated memory of the array arguments. Probably write
-        // a function for this.
+        // TODO free allocated memory of the array input.
     }
 
     return 0;
 }
+////////////////////////////////////////////////////////////////////////////////
 
+// tests
+////////////////////////////////////////////////////////////////////////////////
+int test_str_split() {
+    // Description
+    // This function tests the str_split function.
+    //
+    // Returns
+    // test_str_split returns 0 on successful completion of all tests or
+    // -1 in case of any test or itself failed.
+
+    // variable declaration
+    char *string;
+    /*char **strings;*/
+    char **tokens;
+    char *delimiters;
+    char **expected_tokens;
+    const char space_tabs[] = " \t";
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests that were passed
+    int failed;  // boolean indicator that a test failed
+    int return_value;  // integer placeholder for error checking
+    void *return_pointer;  // pointer placeholder for error checking
+    int i;  // generic counter
+
+    num_tests = 0;
+    num_passed = 0;
+
+    // test 01
+    num_tests++;
+
+    return_pointer = strdup("a");
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        // TODO memory cleanup
+        return -1;
+    } else {
+        string = return_pointer;
+    }
+
+    return_pointer = strdup(space_tabs);
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        // TODO memory cleanup
+        return -1;
+    } else {
+        delimiters = return_pointer;
+    }
+
+    expected_tokens = NULL;
+    return_pointer = (char **)realloc(expected_tokens,
+            (size_t)(1 * sizeof(*expected_tokens)));
+    if (return_pointer == NULL) {
+        perror("error, realloc");
+        // TODO memory cleanup
+        return -1;
+    } else {
+        expected_tokens = return_pointer;
+    }
+
+    expected_tokens[0] = NULL;
+    return_pointer = strdup("a");
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        // TODO memory cleanup
+        return -1;
+    } else {
+        expected_tokens[0] = return_pointer;
+    }
+
+    failed = 0;
+    tokens = NULL;
+    return_value = str_split(string, &tokens, delimiters);
+    if (return_value != -1) {
+        for (i = 0; tokens[i] != NULL; i++) {
+            if (strcmp(tokens[i], expected_tokens[i])) {
+                failed = 1;
+            }
+        }
+        if (!failed) {
+            num_passed++;
+        }
+    }
+    // TODO memory cleanup
+
+    if (num_passed == num_tests) {
+        printf("All str_split tests were passed.\n");
+        return 0;
+    } else {
+        printf("At least one str_split test failed.\n");
+        return -1;
+    }
+}
+
+int test_all() {
+    // Description
+    // This function calls all the test functions of this program.
+    //
+    // Returns
+    // test_all returns 0 on successful completion of all test functions or
+    // -1 in case of any test function or itself failing.
+
+    // variable declaration
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests that were passed
+    int return_value;  // integer placeholder for error checking
+
+    num_tests = 0;
+    num_passed = 0;
+
+    // test_str_split
+    num_tests++;
+    return_value = test_str_split();
+    if (return_value == 0) {
+        num_passed++;
+    }
+
+    if (num_passed == num_tests) {
+        printf("\n");
+        printf("All tests were passed.\n");
+        return 0;
+    } else {
+        printf("\n");
+        printf("At least one test failed.\n");
+        return -1;
+    }
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 // main function
@@ -327,7 +453,9 @@ int main(int argc, char *argv[]) {
 
     // variable declaration
 
-    task_queue();
+    /*test_str_split();*/
+
+    test_all();
 
     return 0;
 }

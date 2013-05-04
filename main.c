@@ -197,66 +197,6 @@ int str_split(const char *str, char ***tokens, const char *delimiters) {
 
     return (num_elements - 1);
 }
-
-//int get_task(char *input, char **arguments) {
-//    // Description
-//    // This function reads an input from stdin which is parsed and the distinct
-//    // arguments contained in it are extracted and stored in the char* array
-//    // arguments. The input is then verified to be a valid task of
-//    // the application. [...] TODO
-//    //
-//    // Returns
-//    // TODO
-//
-//    // variable declaration
-//    char *input;  // dynamically allocated string containing the raw user input
-//    size_t buffer_size;
-//    int input_length;
-//    char **arguments;
-//    int return_value;  // integer placeholder for error checking
-//    const char space_tabs[] = " \t";
-//
-//    // Read the user input as a line from stdin.
-//    input = NULL;
-//    buffer_size = 0;
-//    return_value = getline(&input, &buffer_size, stdin);
-//    if (return_value == -1) {
-//        perror("error, getline");
-//        return -1;
-//    }
-//
-//    // Store the input length, excluding the newline character.
-//    input_length = strlen(input) - 1;
-//
-//    // Verify that an entire line, terminating in a newline character, was read.
-//    if (input[input_length] == '\n') {
-//        // Remove the trailing newline character.
-//        input[input_length] = '\0';
-//    } else {
-//        printf("Error, getline didn't read an entire line.\n");
-//        free(input);
-//        return -1;
-//    }
-//
-//    // The input length should be at most equal to MAX_INPUT_LENGTH.
-//    if (input_length > MAX_INPUT_LENGTH) {
-//        printf("Error, the input was too large.\n");
-//        free(input);
-//        return -1;
-//    }
-//
-//    // Split the input into distinct arguments.
-//    return_value = str_split(input, arguments, space_tabs);
-//    if (return_value == -1) {
-//        printf("error, str_split\n");
-//        return -1;
-//    }
-//
-//    // Deallocate allocated memory.
-//    free(input);
-//
-//    return 0;
-//}
 ////////////////////////////////////////////////////////////////////////////////
 
 // main function
@@ -275,10 +215,10 @@ int main(int argc, char *argv[]) {
     char **tokens;
     const char space_tabs[] = " \t";
     int return_value;  // integer placeholder for error checking
-    int rv_prime;  // integer placeholder for error checking
+    /*int rv_prime;  // integer placeholder for error checking*/
     int i;  // generic counter
 
-    // function to be tested: str_split
+    // function being implemented or tested: task_queue
     input = NULL;
     max_input_length = MAX_INPUT_LENGTH;
 
@@ -293,25 +233,14 @@ int main(int argc, char *argv[]) {
             printf("\n");
 
             tokens = NULL;
-            rv_prime = str_split(input, &tokens, space_tabs);
-            if (rv_prime != -1) {
+            return_value = str_split(input, &tokens, space_tabs);
+            if (return_value != -1) {
                 for (i = 0; tokens[i] != NULL; i++) {
                     printf("token %2d: %s\n", i, tokens[i]);
                 }
             }
         }
     }
-
-    /*// function to be tested: get_input*/
-    /*arguments = NULL;*/
-    /*return_value = get_input(arguments);*/
-    /*if (return_value == -1) {*/
-        /*printf("error, get_input failed\n");*/
-    /*}*/
-
-    /*for (i = 0; arguments[i] != NULL; i++) {*/
-        /*printf("argument %2d: %s\n", i, arguments[i]);*/
-    /*}*/
 
     return 0;
 }
