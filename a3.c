@@ -290,8 +290,8 @@ int task_queue() {
     int return_value;  // integer placeholder for error checking
     int i;  // generic counter
 
-    // Clear the screen.
-    clear_screen();
+    // TODO Clear the screen.
+    /*clear_screen();*/
 
     // Print a welcome message.
     printf(ANSI_BOLD "SCEE" ANSI_RESET " - ");
@@ -343,7 +343,7 @@ int task_queue() {
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
             process_quit();
         } else {
-            printf("Invalid command.\n");
+            printf("invalid command\n");
         }
 
         // Memory deallocation.
@@ -575,10 +575,14 @@ int main(int argc, char *argv[]) {
     // main returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    int return_value;  // integer placeholder for error checking
 
     /*test_str_split();*/
 
-    task_queue();
+    return_value = task_queue();
+    if (return_value == -1) {
+        printf("error, task_queue\n");
+    }
 
     /*test_all();*/
 
