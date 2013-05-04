@@ -288,30 +288,31 @@ int task_queue() {
     char task[MAX_INPUT_LENGTH + 1];
     const char space_tab[] = " \t";
     int return_value;  // integer placeholder for error checking
+    int i;  // generic counter
+
+    // Clear the screen.
+    clear_screen();
+
+    // Print a welcome message.
+    printf(ANSI_BOLD "SCEE" ANSI_RESET " - ");
+    printf(ANSI_RED "Signal Controlled Execution Environment" ANSI_RESET);
+    printf("\n");
 
     strcpy(task, "");
     while (strcmp(task, "quit") && strcmp(task, "q")) {
-        // TODO Clear the screen.
-        /*clear_screen();*/
-
-        // Print a welcome message.
-        printf(ANSI_BOLD "SCEE" ANSI_RESET " - ");
-        printf(ANSI_RED "Signal Controlled Execution Environment" ANSI_RESET);
-        printf("\n\n");
-
-        // TODO Print the program functions.
-        printf("COMMANDS\n\n");
-
-        printf(ANSI_BOLD "exec" ANSI_RESET " <PATH> [arg1] [arg2] ...\n");
-        printf(ANSI_BOLD "kill" ANSI_RESET " <PID>\n");
-        printf(ANSI_BOLD "stop" ANSI_RESET " <PID>\n");
-        printf(ANSI_BOLD "cont" ANSI_RESET " <PID>\n");
-        printf(ANSI_BOLD "list" ANSI_RESET "\n");
-        printf(ANSI_BOLD "info" ANSI_RESET " <PID>\n");
-        printf(ANSI_BOLD "quit" ANSI_RESET "\n");
-        printf("\n");
+        // Print available commands.
+        printf("\nCOMMANDS\n");
+        printf("    " ANSI_BOLD "exec" ANSI_RESET " <PATH> [arg1] [arg2] ...\n");
+        printf("    " ANSI_BOLD "kill" ANSI_RESET " <PID>\n");
+        printf("    " ANSI_BOLD "stop" ANSI_RESET " <PID>\n");
+        printf("    " ANSI_BOLD "cont" ANSI_RESET " <PID>\n");
+        printf("    " ANSI_BOLD "list" ANSI_RESET "\n");
+        printf("    " ANSI_BOLD "info" ANSI_RESET " <PID>\n");
+        printf("    " ANSI_BOLD "quit" ANSI_RESET "\n");
+        /*printf("\n");*/
         printf("> ");
 
+        // Get a command.
         raw_input = NULL;
         return_value = get_input(&raw_input, MAX_INPUT_LENGTH);
         if (return_value == -1) {
@@ -326,6 +327,7 @@ int task_queue() {
 
         strcpy(task, input[0]);
 
+        // Execute the command.
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
             process_exec();
         } else if (!strcmp(task, "kill") || !strcmp(task, "k")) {
@@ -341,10 +343,15 @@ int task_queue() {
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
             process_quit();
         } else {
-                printf("Invalid command.\n\n");
+            printf("Invalid command.\n");
         }
 
-        // TODO free memory
+        // Memory deallocation.
+        free(raw_input);
+        for (i = 0; input[i] != NULL; i++) {
+            free(input[i]);
+        }
+        free(input);
     }
 
     return 0;
