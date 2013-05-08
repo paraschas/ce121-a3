@@ -19,6 +19,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #define MAX_TASK_LENGTH 4
 #define MAX_INPUT_LENGTH 512
+#define MAX_PATH_LENGTH 512
 
 // http://stackoverflow.com/a/3219471
 // http://en.wikipedia.org/wiki/ANSI_escape_code
@@ -560,7 +561,7 @@ int test_str_split() {
     //
     // Returns
     // test_str_split returns 0 on successful completion of all tests or
-    // -1 in case of any test or itself failed.
+    // -1 in case of any test or itself failing.
 
     // variable declaration
     char *string;
@@ -732,7 +733,7 @@ int test_list_create() {
     //
     // Returns
     // test_list_create returns 0 on successful completion of all tests or
-    // -1 in case of any test or itself failed.
+    // -1 in case of any test or itself failing.
 
     // variable declaration
     process_t *list;
@@ -784,6 +785,72 @@ int test_list_create() {
     }
 }
 
+int test_list_add() {
+    // Description
+    // This function tests the list_add function.
+    //
+    // Returns
+    // test_list_add returns 0 on successful completion of all tests or
+    // -1 in case of any test or itself failing.
+
+    // variable declaration
+    process_t *list;
+    int pid;
+    char path[MAX_PATH_LENGTH + 1];
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests passed
+    int failed;  // boolean indicator that a test failed
+    int return_value;  // integer placeholder for error checking
+
+    printf("testing list_add\n");
+
+    num_tests = 0;
+    num_passed = 0;
+
+    // test 01
+    num_tests++;
+    failed = 0;
+
+    list = NULL;
+    return_value = list_create(&list);
+    if (return_value == -1) {
+        printf("error, list_create\n");
+        return -1;
+    }
+
+    pid = 1;
+    strcpy(path, "./program");
+    return_value = list_add(list, pid, path);
+    if (return_value != -1) {
+        if ((list->next->pid != pid) ||
+                (strcmp(list->next->path, path)) ||
+                (list->next->stopped != 0) ||
+                (list->next->next != list) ||
+                (list->next->prev != list)) {
+            failed = 1;
+        }
+        if ((list->prev->pid != pid) ||
+                (strcmp(list->prev->path, path)) ||
+                (list->prev->stopped != 0) ||
+                (list->prev->next != list) ||
+                (list->prev->prev != list)) {
+            failed = 1;
+        }
+        if (!failed) {
+            num_passed++;
+        }
+    }
+    // TODO free memory
+
+    if (num_passed == num_tests) {
+        printf("\tall tests passed\n");
+        return 0;
+    } else {
+        printf("\tat least one test failed\n");
+        return -1;
+    }
+}
+
 int test_all() {
     // Description
     // This function calls all the test functions of this program.
@@ -810,6 +877,13 @@ int test_all() {
     // test_list_create
     num_tests++;
     return_value = test_list_create();
+    if (return_value == 0) {
+        num_passed++;
+    }
+
+    // test_list_add
+    num_tests++;
+    return_value = test_list_add();
     if (return_value == 0) {
         num_passed++;
     }
@@ -841,6 +915,8 @@ int main(int argc, char *argv[]) {
     /*test_str_split();*/
 
     /*test_list_create();*/
+
+    test_list_add();
 
     /*test_all();*/
 
