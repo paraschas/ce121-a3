@@ -241,7 +241,7 @@ void clear_screen() {
     printf("\e[1;1H\e[2J");
 }
 
-int list_create(process_t *list) {
+int list_create(process_t **list) {
     // Description
     // This function creates a doubly linked list of information about processes
     // by creating and initializing its sentinel node. The address of
@@ -271,7 +271,7 @@ int list_create(process_t *list) {
     sentinel->next = sentinel;
     sentinel->prev = sentinel;
 
-    list = sentinel;
+    *list = sentinel;
 
     return 0;
 }
@@ -409,6 +409,7 @@ int task_queue() {
     printf("\n");
 
     // TODO Initialize the processes list.
+    processes = NULL;
     // NEXT Call list_create.
 
     strcpy(task, "");
@@ -496,6 +497,8 @@ int test_str_split() {
     int return_value;  // integer placeholder for error checking
     void *return_pointer;  // pointer placeholder for error checking
     int i;  // generic counter
+
+    printf("testing list_create\n");
 
     num_tests = 0;
     num_passed = 0;
@@ -635,10 +638,68 @@ int test_str_split() {
     // TODO free memory
 
     if (num_passed == num_tests) {
-        printf("All str_split tests passed.\n");
+        printf("\tall tests passed\n");
         return 0;
     } else {
-        printf("At least one str_split test failed.\n");
+        printf("\tat least one test failed\n");
+        return -1;
+    }
+}
+
+int test_list_create() {
+    // Description
+    // This function tests the list_create function.
+    //
+    // Returns
+    // test_list_create returns 0 on successful completion of all tests or
+    // -1 in case of any test or itself failed.
+
+    // variable declaration
+    process_t *list;
+    process_t expected_list;
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests passed
+    int failed;  // boolean indicator that a test failed
+    int return_value;  // integer placeholder for error checking
+
+    printf("testing list_create\n");
+
+    num_tests = 0;
+    num_passed = 0;
+
+    // test 01
+    num_tests++;
+    failed = 0;
+
+    // expected_list initialization.
+    expected_list.pid = 0;
+    expected_list.path = NULL;
+    expected_list.stopped = 0;
+    expected_list.next = NULL;
+    expected_list.prev = NULL;
+
+    list = NULL;
+    return_value = list_create(&list);
+    if (return_value != -1) {
+        if ((list == NULL) ||
+                (list->pid != expected_list.pid) ||
+                (list->path != expected_list.path) ||
+                (list->stopped != expected_list.stopped) ||
+                (list->next != list) ||
+                (list->prev != list)) {
+            failed = 1;
+        }
+        if (!failed) {
+            num_passed++;
+        }
+    }
+    // TODO free memory
+
+    if (num_passed == num_tests) {
+        printf("\tall tests passed\n");
+        return 0;
+    } else {
+        printf("\tat least one test failed\n");
         return -1;
     }
 }
@@ -666,13 +727,20 @@ int test_all() {
         num_passed++;
     }
 
+    // test_list_create
+    num_tests++;
+    return_value = test_list_create();
+    if (return_value == 0) {
+        num_passed++;
+    }
+
     if (num_passed == num_tests) {
         printf("\n");
-        printf("All tests passed.\n");
+        printf("all tests passed\n");
         return 0;
     } else {
         printf("\n");
-        printf("At least one test failed.\n");
+        printf("at least one test failed\n");
         return -1;
     }
 }
@@ -688,16 +756,18 @@ int main(int argc, char *argv[]) {
     // main returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
-    int return_value;  // integer placeholder for error checking
+    /*int return_value;  // integer placeholder for error checking*/
 
     /*test_str_split();*/
 
-    return_value = task_queue();
-    if (return_value == -1) {
-        printf("error, task_queue\n");
-    }
+    /*test_list_create();*/
 
-    /*test_all();*/
+    //return_value = task_queue();
+    //if (return_value == -1) {
+    //    printf("error, task_queue\n");
+    //}
+
+    test_all();
 
     return 0;
 }
