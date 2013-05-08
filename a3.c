@@ -377,6 +377,7 @@ int list_search(process_t *list, process_t **result, int pid) {
     for (node = list->next; node->pid != pid; node = node->next);
 
     if (node == list) {
+        *result = NULL;
         return 0;
     } else {
         *result = node;
@@ -386,10 +387,10 @@ int list_search(process_t *list, process_t **result, int pid) {
 
 // TODO list manipulation functions
 // list_create DONE
-// list_print DONE
 // list_add DONE
 // list_remove
-// list_search DONE TODO test
+// list_print DONE
+// list_search DONE
 
 int process_exec(process_t *processes, char *arguments[]) {
     // Description
@@ -961,6 +962,143 @@ int test_list_add() {
     }
 }
 
+int test_list_search() {
+    // Description
+    // This function tests the list_search function.
+    //
+    // Returns
+    // test_list_search returns 0 on successful completion of all tests or
+    // -1 in case of any test or itself failing.
+
+    // variable declaration
+    process_t *list;
+    process_t *result;
+    int pid;
+    char path[MAX_PATH_LENGTH + 1];
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests passed
+    int failed;  // boolean indicator that a test failed
+    int return_value;  // integer placeholder for error checking
+
+    printf("testing list_search\n");
+
+    num_tests = 0;
+    num_passed = 0;
+
+    list = NULL;
+    return_value = list_create(&list);
+    if (return_value == -1) {
+        printf("error, list_create\n");
+        return -1;
+    }
+
+    pid = 1;
+    strcpy(path, "./program");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 10;
+    strcpy(path, "./program_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 100;
+    strcpy(path, "./program_double_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 1000;
+    strcpy(path, "./program_triple_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    // test 01
+    num_tests++;
+    failed = 0;
+
+    pid = 1;
+    return_value = list_search(list, &result, pid);
+    if (return_value == 1) {
+        if ((result == NULL) || (result->pid != pid)) {
+            failed = 1;
+        }
+    } else {
+        failed = 1;
+    }
+    if (!failed) {
+        num_passed++;
+    }
+
+    // test 02
+    num_tests++;
+    failed = 0;
+
+    pid = 100;
+    return_value = list_search(list, &result, pid);
+    if (return_value == 1) {
+        if ((result == NULL) || (result->pid != pid)) {
+            failed = 1;
+        }
+    } else {
+        failed = 1;
+    }
+    if (!failed) {
+        num_passed++;
+    }
+
+    // test 03
+    num_tests++;
+    failed = 0;
+
+    pid = 4;
+    return_value = list_search(list, &result, pid);
+    if (return_value != 0) {
+        failed = 1;
+    } else {
+        if (result != NULL) {
+            failed = 1;
+        }
+    }
+    if (!failed) {
+        num_passed++;
+    }
+
+    // test 04
+    num_tests++;
+    failed = 0;
+
+    pid = 111;
+    return_value = list_search(list, &result, pid);
+    if (return_value != 0) {
+        failed = 1;
+    } else {
+        if (result != NULL) {
+            failed = 1;
+        }
+    }
+    if (!failed) {
+        num_passed++;
+    }
+
+    // TODO free memory
+
+    if (num_passed == num_tests) {
+        printf("\tall tests passed\n");
+        return 0;
+    } else {
+        printf("\tat least one test failed\n");
+        return -1;
+    }
+}
+
 int test_all() {
     // Description
     // This function calls all the test functions of this program.
@@ -998,6 +1136,20 @@ int test_all() {
         num_passed++;
     }
 
+    // test_list_print
+    num_tests++;
+    return_value = test_list_print();
+    if (return_value == 0) {
+        num_passed++;
+    }
+
+    // test_list_search
+    num_tests++;
+    return_value = test_list_search();
+    if (return_value == 0) {
+        num_passed++;
+    }
+
     if (num_passed == num_tests) {
         printf("\n");
         printf("all tests passed\n");
@@ -1026,9 +1178,11 @@ int main(int argc, char *argv[]) {
 
     /*test_list_create();*/
 
+    /*test_list_print();*/
+
     /*test_list_add();*/
 
-    test_list_print();
+    test_list_search();
 
     /*test_all();*/
 
