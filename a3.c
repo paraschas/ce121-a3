@@ -386,8 +386,8 @@ int list_search(process_t *list, process_t **result, int pid) {
 
 // TODO list manipulation functions
 // list_create DONE
-// list_print
-// list_add DONE TODO test
+// list_print DONE
+// list_add DONE
 // list_remove
 // list_search DONE TODO test
 
@@ -815,72 +815,6 @@ int test_list_create() {
     }
 }
 
-int test_list_add() {
-    // Description
-    // This function tests the list_add function.
-    //
-    // Returns
-    // test_list_add returns 0 on successful completion of all tests or
-    // -1 in case of any test or itself failing.
-
-    // variable declaration
-    process_t *list;
-    int pid;
-    char path[MAX_PATH_LENGTH + 1];
-    int num_tests;  // number of tests
-    int num_passed;  // number of tests passed
-    int failed;  // boolean indicator that a test failed
-    int return_value;  // integer placeholder for error checking
-
-    printf("testing list_add\n");
-
-    num_tests = 0;
-    num_passed = 0;
-
-    // test 01
-    num_tests++;
-    failed = 0;
-
-    list = NULL;
-    return_value = list_create(&list);
-    if (return_value == -1) {
-        printf("error, list_create\n");
-        return -1;
-    }
-
-    pid = 1;
-    strcpy(path, "./program");
-    return_value = list_add(list, pid, path);
-    if (return_value != -1) {
-        if ((list->next->pid != pid) ||
-                (strcmp(list->next->path, path)) ||
-                (list->next->stopped != 0) ||
-                (list->next->next != list) ||
-                (list->next->prev != list)) {
-            failed = 1;
-        }
-        if ((list->prev->pid != pid) ||
-                (strcmp(list->prev->path, path)) ||
-                (list->prev->stopped != 0) ||
-                (list->prev->next != list) ||
-                (list->prev->prev != list)) {
-            failed = 1;
-        }
-        if (!failed) {
-            num_passed++;
-        }
-    }
-    // TODO free memory
-
-    if (num_passed == num_tests) {
-        printf("\tall tests passed\n");
-        return 0;
-    } else {
-        printf("\tat least one test failed\n");
-        return -1;
-    }
-}
-
 int test_list_print() {
     // Description
     // This function tests the list_print function.
@@ -951,6 +885,72 @@ int test_list_print() {
     if (!failed) {
         num_passed++;
     }
+
+    if (num_passed == num_tests) {
+        printf("\tall tests passed\n");
+        return 0;
+    } else {
+        printf("\tat least one test failed\n");
+        return -1;
+    }
+}
+
+int test_list_add() {
+    // Description
+    // This function tests the list_add function.
+    //
+    // Returns
+    // test_list_add returns 0 on successful completion of all tests or
+    // -1 in case of any test or itself failing.
+
+    // variable declaration
+    process_t *list;
+    int pid;
+    char path[MAX_PATH_LENGTH + 1];
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests passed
+    int failed;  // boolean indicator that a test failed
+    int return_value;  // integer placeholder for error checking
+
+    printf("testing list_add\n");
+
+    num_tests = 0;
+    num_passed = 0;
+
+    // test 01
+    num_tests++;
+    failed = 0;
+
+    list = NULL;
+    return_value = list_create(&list);
+    if (return_value == -1) {
+        printf("error, list_create\n");
+        return -1;
+    }
+
+    pid = 1;
+    strcpy(path, "./program");
+    return_value = list_add(list, pid, path);
+    if (return_value != -1) {
+        if ((list->next->pid != pid) ||
+                (strcmp(list->next->path, path)) ||
+                (list->next->stopped != 0) ||
+                (list->next->next != list) ||
+                (list->next->prev != list)) {
+            failed = 1;
+        }
+        if ((list->prev->pid != pid) ||
+                (strcmp(list->prev->path, path)) ||
+                (list->prev->stopped != 0) ||
+                (list->prev->next != list) ||
+                (list->prev->prev != list)) {
+            failed = 1;
+        }
+        if (!failed) {
+            num_passed++;
+        }
+    }
+    // TODO free memory
 
     if (num_passed == num_tests) {
         printf("\tall tests passed\n");
