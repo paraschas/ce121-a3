@@ -277,36 +277,6 @@ int list_create(process_t **list) {
     return 0;
 }
 
-int list_print(process_t *list) {
-    // Description
-    // This function prints the contents of the nodes of the list list.
-    //
-    // Returns
-    // list_print returns 0 on successful completion or -1 in case of failure.
-
-    // variable declaration
-    process_t *node;
-    int i;  // generic counter
-
-    if (list == NULL) {
-        // list should point to a valid list.
-        return -1;
-    }
-
-    i = 0;
-    for (node = list->next; node != list; node = node->next) {
-        i++;
-        printf("node: %d\n", i);
-        printf("\tpid: %d\n", node->pid);
-        printf("\tpath: %s\n", node->path);
-        printf("\tstopped: %d\n", node->stopped);
-        printf("\tnext: %p\n", node->next);
-        printf("\tprev: %p\n", node->prev);
-    }
-
-    return 0;
-}
-
 int list_add(process_t *list, int pid, char *path) {
     // Description
     // This function adds a node containing the data pid and path right after
@@ -349,6 +319,36 @@ int list_add(process_t *list, int pid, char *path) {
     node->prev = list;
     list->next->prev = node;
     list->next = node;
+
+    return 0;
+}
+
+int list_print(process_t *list) {
+    // Description
+    // This function prints the contents of the nodes of the list list.
+    //
+    // Returns
+    // list_print returns 0 on successful completion or -1 in case of failure.
+
+    // variable declaration
+    process_t *node;
+    int i;  // generic counter
+
+    if (list == NULL) {
+        // list should point to a valid list.
+        return -1;
+    }
+
+    i = 0;
+    for (node = list->next; node != list; node = node->next) {
+        i++;
+        printf("node: %d\n", i);
+        printf("\tpid: %d\n", node->pid);
+        printf("\tpath: %s\n", node->path);
+        printf("\tstopped: %d\n", node->stopped);
+        printf("\tnext: %p\n", node->next);
+        printf("\tprev: %p\n", node->prev);
+    }
 
     return 0;
 }
@@ -1178,11 +1178,13 @@ int main(int argc, char *argv[]) {
 
     /*test_list_create();*/
 
-    /*test_list_print();*/
-
     /*test_list_add();*/
 
-    test_list_search();
+    /*test_list_remove();*/
+
+    /*test_list_print();*/
+
+    /*test_list_search();*/
 
     /*test_all();*/
 
