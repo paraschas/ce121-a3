@@ -3,9 +3,8 @@
 // Description
 // TODO
 //
-// TODO Implement list manipulation functions. Some tasks that come to mind:
-// create, search, add element, remove element. The list should include
-// a sentinel.
+// TODO I'd like to implement manipulation functions for a generic list.
+// The list should be doubly linked and have a sentinel node.
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
@@ -31,22 +30,16 @@
 // custom data types
 ////////////////////////////////////////////////////////////////////////////////
 struct process_s {
-    // This struct contains information about a process.
+    // This struct is a node of a doubly linked list. Its data is information
+    // about a process.
     int pid;  // PID
     char *path;  // Path to the executable file.
-    char *name;  // Executable file name.
+    /*char *name;  // Executable file name. TODO requires string manipulation*/
     int stopped;  // Boolean indicator that the process has been stopped.
+    struct process_s *next;  // The next node of the list.
+    struct process_s *prev;  // The previous node of the list.
 };
 typedef struct process_s process_t;
-
-struct node_s {
-    // This struct is a node of a doubly linked list.
-    // The data element can point to an arbitrary data type or structure.
-    void *data;  // Pointer to arbitrary data.
-    struct node_s *prev;  // The previous node of the list.
-    struct node_s *next;  // The next node of the list.
-};
-typedef struct node_s node_t;
 ////////////////////////////////////////////////////////////////////////////////
 
 // global variable declaration
@@ -247,6 +240,56 @@ void clear_screen() {
 
     printf("\e[1;1H\e[2J");
 }
+
+int list_create(process_t *list) {
+    // Description
+    // This function initializes a doubly linked list. The sentinel node of
+    // the list contains the data pointed by data.
+    //
+    // Returns
+    // list_create returns 0 on successful completion or -1 in case of failure.
+
+    // variable declaration
+    process_t *sentinel;
+    void *return_pointer;  // pointer placeholder for error checking
+
+    return_pointer = (process_t *)malloc(1 * sizeof(process_t));
+    if (return_pointer == NULL) {
+        perror("error, malloc");
+        return -1;
+    } else {
+        sentinel = return_pointer;
+    }
+
+    // Data initialization.
+    sentinel->pid = 0;
+    sentinel->path = NULL;
+    sentinel->stopped = 0;
+
+    // Pointer initialization.
+    sentinel->next = sentinel;
+    sentinel->prev = sentinel;
+
+    list = sentinel;
+
+    return 0;
+}
+
+// struct process_s {
+//     // This struct is a node of a doubly linked list. Its data is information
+//     // about a process.
+//     int pid;  // PID
+//     char *path;  // Path to the executable file.
+//     /*char *name;  // Executable file name. TODO requires string manipulation*/
+//     int stopped;  // Boolean indicator that the process has been stopped.
+//     struct process_s *next;  // The next node of the list.
+//     struct process_s *prev;  // The previous node of the list.
+// };
+// typedef struct process_s process_t;
+
+// TODO Implement list manipulation functions. Some tasks that come to mind:
+// create, search, add element, remove element. The list should include
+// a sentinel.
 
 int process_exec(process_t *processes, char *arguments[]) {
     // Description
