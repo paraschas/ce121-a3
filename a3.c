@@ -323,6 +323,32 @@ int list_add(process_t *list, int pid, char *path) {
     return 0;
 }
 
+int list_remove(process_t *node) {
+    // Description
+    // This function removes the node node from the list it resides and
+    // subsequently deletes it.
+    //
+    // Returns
+    // list_remove returns 0 on successful completion or -1 in case of failure.
+
+    // variable declaration
+
+    if ((node == NULL) || (node->next == NULL) || (node->prev == NULL)){
+        // node should point to a valid node residing in a list.
+        return -1;
+    }
+
+    // Remove the node from the list.
+    node->next->prev = node->prev;
+    node->prev->next = node->next;
+
+    // Delete the node.
+    free(node->path);
+    free(node);
+
+    return 0;
+}
+
 int list_print(process_t *list) {
     // Description
     // This function prints the contents of the nodes of the list list.
@@ -388,7 +414,7 @@ int list_search(process_t *list, process_t **result, int pid) {
 // TODO list manipulation functions
 // list_create DONE
 // list_add DONE
-// list_remove
+// list_remove DONE TODO test
 // list_print DONE
 // list_search DONE
 
