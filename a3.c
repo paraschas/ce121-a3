@@ -30,6 +30,23 @@
 
 // custom data types
 ////////////////////////////////////////////////////////////////////////////////
+struct process_s {
+    // This struct contains information about a process.
+    int pid;  // PID
+    char *path;  // Path to the executable file.
+    char *name;  // Executable file name.
+    int stopped;  // Boolean indicator that the process has been stopped.
+};
+typedef struct process_s process_t;
+
+struct node_s {
+    // This struct is a node of a doubly linked list.
+    // The data element can point to an arbitrary data type or structure.
+    void *data;  // Pointer to arbitrary data.
+    struct node_s *prev;  // The previous node of the list.
+    struct node_s *next;  // The next node of the list.
+};
+typedef struct node_s node_t;
 ////////////////////////////////////////////////////////////////////////////////
 
 // global variable declaration
@@ -41,6 +58,7 @@
 int get_input(char **input, const int max_length);
 int str_split(const char *str, char ***tokens, const char *delimiters);
 void clear_screen();
+int task_queue();
 ////////////////////////////////////////////////////////////////////////////////
 
 // functions
@@ -230,32 +248,74 @@ void clear_screen() {
     printf("\e[1;1H\e[2J");
 }
 
-void process_exec() {
-/*void process_exec(char *child_argv[]) {*/
-    //return_value = execv
+int process_exec(process_t *processes, char *arguments[]) {
+    // Description
+    // This function spawns a new process of the executable file specified in
+    // the path which is the first element of arguments and adds a node
+    // containing information about it in processes.
+    //
+    // Returns
+    // process_exec returns 0 on successful completion or -1 in case of failure.
+
+    // variable declaration
+
     printf("process_exec called\n");
     // TODO Create a new process.
+
+    return 0;
 }
 
 int process_kill() {
+    // Description
+    // This function TODO
+    //
+    // Returns
+    // process_kill returns TODO
+
+    // variable declaration
+
     printf("process_kill called\n");
     // TODO Send a signal to kill a process.
     return 0;
 }
 
 int process_stop() {
+    // Description
+    // This function TODO
+    //
+    // Returns
+    // process_stop returns TODO
+
+    // variable declaration
+
     printf("process_stop called\n");
     // TODO Send a signal to stop a running process.
     return 0;
 }
 
 int process_cont() {
+    // Description
+    // This function TODO
+    //
+    // Returns
+    // process_cont returns TODO
+
+    // variable declaration
+
     printf("process_cont called\n");
     // TODO Send a signal to resume a stopped process.
     return 0;
 }
 
 int process_list() {
+    // Description
+    // This function TODO
+    //
+    // Returns
+    // process_list returns TODO
+
+    // variable declaration
+
     printf("process_list called\n");
     // TODO printf a list of the processes, including for each process its PID,
     // the path used to run the program (even better the stripped name of it),
@@ -264,12 +324,28 @@ int process_list() {
 }
 
 int process_info() {
+    // Description
+    // This function TODO
+    //
+    // Returns
+    // process_info returns TODO
+
+    // variable declaration
+
     printf("process_info called\n");
     // TODO printf information about the process.
     return 0;
 }
 
 int process_quit() {
+    // Description
+    // This function TODO
+    //
+    // Returns
+    // process_quit returns TODO
+
+    // variable declaration
+
     printf("process_quit called\n");
     // TODO kill all processes.
     return 0;
@@ -277,7 +353,7 @@ int process_quit() {
 
 int task_queue() {
     // Description
-    // TODO
+    // This function TODO
     //
     // Returns
     // task_queue returns 0 on successful completion or -1 in case of failure.
@@ -290,6 +366,8 @@ int task_queue() {
     int return_value;  // integer placeholder for error checking
     int i;  // generic counter
 
+    process_t *processes;
+
     // TODO Clear the screen.
     /*clear_screen();*/
 
@@ -297,6 +375,9 @@ int task_queue() {
     printf(ANSI_BOLD "SCEE" ANSI_RESET " - ");
     printf(ANSI_RED "Signal Controlled Execution Environment" ANSI_RESET);
     printf("\n");
+
+    // TODO Initialize the processes list.
+    // NEXT Call list_create.
 
     strcpy(task, "");
     while (strcmp(task, "quit") && strcmp(task, "q")) {
@@ -329,7 +410,7 @@ int task_queue() {
 
         // Execute the command.
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
-            process_exec();
+            process_exec(processes, input);
         } else if (!strcmp(task, "kill") || !strcmp(task, "k")) {
             process_kill();
         } else if (!strcmp(task, "stop") || !strcmp(task, "s")) {
