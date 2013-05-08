@@ -276,9 +276,89 @@ int list_create(process_t **list) {
     return 0;
 }
 
-// TODO Implement list manipulation functions. Some tasks that come to mind:
-// create, search, add element, remove element. The list should include
-// a sentinel.
+int list_search(process_t *list, process_t **result, int pid) {
+    // Description
+    // This function searches for a node with pid of pid in the list list.
+    // It stores the address of the node found in result, or NULL, if no such
+    // node was found.
+    //
+    // Returns
+    // list_search returns 1 if a matching node was found in the list,
+    // 0 if no matching node was found, or -1 in case of failure.
+
+    // variable declaration
+    process_t *node;
+
+    if (list == NULL) {
+        // list should point to a valid list.
+        return -1;
+    }
+
+    // Store the query in the sentinel.
+    list->pid = pid;
+
+    for (node = list->next; node->pid != pid; node = node->next);
+
+    if (node == list) {
+        return 0;
+    } else {
+        *result = node;
+        return 1;
+    }
+}
+
+int list_add(process_t *list, int pid, char *path) {
+    // Description
+    // This function adds a node containing the data pid and path right after
+    // the sentinel node of the list list.
+    //
+    // Returns
+    // list_add returns 0 on successful completion or -1 in case of failure.
+
+    // variable declaration
+    process_t *node;
+    void *return_pointer;  // pointer placeholder for error checking
+
+    if (list == NULL) {
+        // list should point to a valid list.
+        return -1;
+    }
+
+    // Create the new node.
+    return_pointer = (process_t *)malloc(1 * sizeof(process_t));
+    if (return_pointer == NULL) {
+        perror("error, malloc");
+        return -1;
+    } else {
+        node = return_pointer;
+    }
+
+    // Populate the node with data.
+    node->pid = pid;
+    return_pointer = strdup(path);
+    if (return_pointer == NULL) {
+        perror("error, strdup");
+        return -1;
+    } else {
+        node->path = return_pointer;
+    }
+    node->stopped = 0;
+
+    // Add the node to the list.
+    node->next = list->next;
+    node->prev = list;
+    list->next->prev = node;
+    list->next = node;
+
+    return 0;
+}
+
+// TODO list manipulation functions
+// list_create DONE
+// list_search DONE TODO test
+// list_add DONE TODO test
+// list_remove
+// list_print
 
 int process_exec(process_t *processes, char *arguments[]) {
     // Description
@@ -762,12 +842,12 @@ int main(int argc, char *argv[]) {
 
     /*test_list_create();*/
 
+    /*test_all();*/
+
     //return_value = task_queue();
     //if (return_value == -1) {
     //    printf("error, task_queue\n");
     //}
-
-    test_all();
 
     return 0;
 }
