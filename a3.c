@@ -277,6 +277,36 @@ int list_create(process_t **list) {
     return 0;
 }
 
+int list_print(process_t *list) {
+    // Description
+    // This function prints the contents of the nodes of the list list.
+    //
+    // Returns
+    // list_print returns 0 on successful completion or -1 in case of failure.
+
+    // variable declaration
+    process_t *node;
+    int i;  // generic counter
+
+    if (list == NULL) {
+        // list should point to a valid list.
+        return -1;
+    }
+
+    i = 0;
+    for (node = list->next; node != list; node = node->next) {
+        i++;
+        printf("node: %d\n", i);
+        printf("\tpid: %d\n", node->pid);
+        printf("\tpath: %s\n", node->path);
+        printf("\tstopped: %d\n", node->stopped);
+        printf("\tnext: %p\n", node->next);
+        printf("\tprev: %p\n", node->prev);
+    }
+
+    return 0;
+}
+
 int list_add(process_t *list, int pid, char *path) {
     // Description
     // This function adds a node containing the data pid and path right after
@@ -851,6 +881,86 @@ int test_list_add() {
     }
 }
 
+int test_list_print() {
+    // Description
+    // This function tests the list_print function.
+    //
+    // Returns
+    // test_list_print returns 0 on successful completion of all tests or
+    // -1 in case of any test or itself failing.
+
+    // variable declaration
+    process_t *list;
+    int pid;
+    char path[MAX_PATH_LENGTH + 1];
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests passed
+    int failed;  // boolean indicator that a test failed
+    int return_value;  // integer placeholder for error checking
+
+    printf("testing list_print\n");
+
+    num_tests = 0;
+    num_passed = 0;
+
+    // test 01
+    num_tests++;
+    failed = 0;
+
+    list = NULL;
+    return_value = list_create(&list);
+    if (return_value == -1) {
+        printf("error, list_create\n");
+        return -1;
+    }
+
+    pid = 1;
+    strcpy(path, "./program");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 10;
+    strcpy(path, "./program_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 100;
+    strcpy(path, "./program_double_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 1000;
+    strcpy(path, "./program_triple_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    return_value = list_print(list);
+    if (return_value == -1) {
+        failed = 1;
+    }
+    // TODO free memory
+
+    if (!failed) {
+        num_passed++;
+    }
+
+    if (num_passed == num_tests) {
+        printf("\tall tests passed\n");
+        return 0;
+    } else {
+        printf("\tat least one test failed\n");
+        return -1;
+    }
+}
+
 int test_all() {
     // Description
     // This function calls all the test functions of this program.
@@ -916,7 +1026,9 @@ int main(int argc, char *argv[]) {
 
     /*test_list_create();*/
 
-    test_list_add();
+    /*test_list_add();*/
+
+    test_list_print();
 
     /*test_all();*/
 
