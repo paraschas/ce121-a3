@@ -243,8 +243,9 @@ void clear_screen() {
 
 int list_create(process_t *list) {
     // Description
-    // This function initializes a doubly linked list. The sentinel node of
-    // the list contains the data pointed by data.
+    // This function creates a doubly linked list of information about processes
+    // by creating and initializing its sentinel node. The address of
+    // the sentinel is stored in list.
     //
     // Returns
     // list_create returns 0 on successful completion or -1 in case of failure.
@@ -274,18 +275,6 @@ int list_create(process_t *list) {
 
     return 0;
 }
-
-// struct process_s {
-//     // This struct is a node of a doubly linked list. Its data is information
-//     // about a process.
-//     int pid;  // PID
-//     char *path;  // Path to the executable file.
-//     /*char *name;  // Executable file name. TODO requires string manipulation*/
-//     int stopped;  // Boolean indicator that the process has been stopped.
-//     struct process_s *next;  // The next node of the list.
-//     struct process_s *prev;  // The previous node of the list.
-// };
-// typedef struct process_s process_t;
 
 // TODO Implement list manipulation functions. Some tasks that come to mind:
 // create, search, add element, remove element. The list should include
