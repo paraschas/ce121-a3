@@ -1,7 +1,7 @@
 // file integers.c
 ////////////////////////////////////////////////////////////////////////////////
 // Description
-// A simple program that prints to stdout the integers from 1 to 1024 in
+// A simple program that prints to stdout the integers from 1 to 128 in
 // ascending order, one every 4 seconds or the number of seconds given as
 // an argument. This value must be in the range [1, 32].
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 
 // #define directives
 ////////////////////////////////////////////////////////////////////////////////
-#define PROGRAM_DESCRIPTION "A simple program that prints to stdout the integers from 1 to 1024 in ascending order, one every 4 seconds or the number of seconds given as an argument. This value must be in the range [1, 32]."
+#define PROGRAM_DESCRIPTION "A simple program that prints to stdout the integers from 1 to 128 in ascending order, one every 4 seconds or the number of seconds given as an argument. This value must be in the range [1, 32]."
 ////////////////////////////////////////////////////////////////////////////////
 
 // custom data types
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    for (i = 0; i <= 1024; i++) {
+    for (i = 0; i <= 128; i++) {
         printf("integers: %d, delay: %d\n", i, delay);
         sleep(delay);
     }
