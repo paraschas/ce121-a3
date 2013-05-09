@@ -325,7 +325,7 @@ int list_add(process_t *list, int pid, char *path) {
 
 int list_remove(process_t *node) {
     // Description
-    // This function removes the node node from the list it resides and
+    // This function removes the node node from the list it is residing and
     // subsequently deletes it.
     //
     // Returns
@@ -414,7 +414,7 @@ int list_search(process_t *list, process_t **result, int pid) {
 // TODO list manipulation functions
 // list_create DONE
 // list_add DONE
-// list_remove DONE TODO test
+// list_remove DONE
 // list_print DONE
 // list_search DONE
 
@@ -988,6 +988,100 @@ int test_list_add() {
     }
 }
 
+int test_list_remove() {
+    // Description
+    // This function tests the list_remove function.
+    //
+    // Returns
+    // test_list_remove returns 0 on successful completion of all tests or
+    // -1 in case of any test or itself failing.
+
+    // variable declaration
+    process_t *list;
+    process_t *result;
+    int pid;
+    char path[MAX_PATH_LENGTH + 1];
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests passed
+    int failed;  // boolean indicator that a test failed
+    int return_value;  // integer placeholder for error checking
+
+    printf("testing list_remove\n");
+
+    num_tests = 0;
+    num_passed = 0;
+
+    list = NULL;
+    return_value = list_create(&list);
+    if (return_value == -1) {
+        printf("error, list_create\n");
+        return -1;
+    }
+
+    pid = 1;
+    strcpy(path, "./program");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 10;
+    strcpy(path, "./program_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 100;
+    strcpy(path, "./program_double_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 1000;
+    strcpy(path, "./program_triple_prime");
+    return_value = list_add(list, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    // test 01
+    num_tests++;
+    failed = 0;
+
+    pid = 1;
+    return_value = list_search(list, &result, pid);
+    if (return_value == -1) {
+        printf("error, list_search\n");
+    }
+    return_value = list_remove(result);
+    if (return_value != -1) {
+        return_value = list_search(list, &result, pid);
+        if (return_value == -1) {
+            printf("error, list_search\n");
+        }
+        if (return_value != 0) {
+            failed = 1;
+        }
+    } else {
+        failed = 1;
+    }
+    if (!failed) {
+        num_passed++;
+    }
+
+    // TODO free memory
+
+    if (num_passed == num_tests) {
+        printf("\tall tests passed\n");
+        return 0;
+    } else {
+        printf("\tat least one test failed\n");
+        return -1;
+    }
+}
+
 int test_list_search() {
     // Description
     // This function tests the list_search function.
@@ -1162,6 +1256,13 @@ int test_all() {
         num_passed++;
     }
 
+    // test_list_remove
+    num_tests++;
+    return_value = test_list_remove();
+    if (return_value == 0) {
+        num_passed++;
+    }
+
     // test_list_print
     num_tests++;
     return_value = test_list_print();
@@ -1206,7 +1307,7 @@ int main(int argc, char *argv[]) {
 
     /*test_list_add();*/
 
-    /*test_list_remove();*/
+    test_list_remove();
 
     /*test_list_print();*/
 
