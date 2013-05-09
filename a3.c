@@ -2,9 +2,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Description
 // TODO
-//
-// TODO I'd like to implement manipulation functions for a generic list.
-// The list should be doubly linked and have a sentinel node.
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
@@ -17,8 +14,8 @@
 
 // #define directives
 ////////////////////////////////////////////////////////////////////////////////
-#define MAX_TASK_LENGTH 4
 #define MAX_INPUT_LENGTH 512
+#define MAX_TASK_LENGTH 4
 #define MAX_PATH_LENGTH 512
 
 // http://stackoverflow.com/a/3219471
@@ -35,7 +32,6 @@ struct process_s {
     // about a process.
     int pid;  // PID
     char *path;  // Path to the executable file.
-    /*char *name;  // Executable file name. TODO requires string manipulation*/
     int stopped;  // Boolean indicator that the process has been stopped.
     struct process_s *next;  // The next node of the list.
     struct process_s *prev;  // The previous node of the list.
@@ -234,8 +230,7 @@ void clear_screen() {
     // clear_screen does not return any value.
 
     // variable declaration
-    //const char cls_ansi_string[] = "\e[1;1H\e[2J";  // TODO The pointer asterisk
-            // was replaced by square brackets. Verify their equivalence.
+    //const char cls_ansi_string[] = "\e[1;1H\e[2J";
 
     //printf("%s", cls_ansi_string);
 
@@ -410,13 +405,6 @@ int list_search(process_t *list, process_t **result, int pid) {
         return 1;
     }
 }
-
-// TODO list manipulation functions
-// list_create DONE
-// list_add DONE
-// list_remove DONE
-// list_print DONE
-// list_search DONE
 
 int process_exec(process_t *processes, char *arguments[]) {
     // Description
@@ -1313,7 +1301,7 @@ int main(int argc, char *argv[]) {
 
     /*test_list_search();*/
 
-    test_all();
+    /*test_all();*/
 
     //return_value = task_queue();
     //if (return_value == -1) {
