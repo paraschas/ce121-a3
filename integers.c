@@ -1,18 +1,21 @@
 // file seconds.c
 ////////////////////////////////////////////////////////////////////////////////
 // Description
-// A simple program that prints to stdout the seconds passed since it was
-// executed.
+// A simple program that prints to stdout the integers from 1 to 1024 in
+// ascending order, one every 4 seconds or the number of seconds given as
+// an argument. This value must be in the range [1, 64]."
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
 ////////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 ////////////////////////////////////////////////////////////////////////////////
 
 // #define directives
 ////////////////////////////////////////////////////////////////////////////////
+#define PROGRAM_DESCRIPTION "A simple program that prints to stdout the integers from 1 to 1024 in ascending order, one every 4 seconds or the number of seconds given as an argument. This value must be in the range [1, 64]."
 ////////////////////////////////////////////////////////////////////////////////
 
 // custom data types
@@ -39,18 +42,35 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[]) {
     // Description
-    // The main function prints to stdout the number of seconds passed since
-    // the program was executed.
+    // The main function implements the functionality described in the program
+    // description.
     //
     // Returns
     // main returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
-    int i;  // generic counter
+    int delay;  // Number of seconds to wait between successive outputs.
+    int return_value;  // Integer placeholder for error checking.
+    int i;  // Generic counter.
 
-    for (i = 0; i > -1; i++) {
-        printf("seconds: %d\n", i);
-        sleep(1);
+    printf("%s\n", PROGRAM_DESCRIPTION);
+
+    if (argc < 2) {
+        delay = 4;
+    } else {
+        return_value = atoi(argv[1]);
+        if ((return_value <= 0) || (return_value > 64)) {
+            // The number of seconds between successive outputs must be in
+            // the range [1, 64].
+            delay = 4;
+        } else {
+            delay = return_value;
+        }
+    }
+
+    for (i = 0; i <= 1024; i++) {
+        printf("integers: %d\n", i);
+        sleep(delay);
     }
 
     return 0;
