@@ -565,8 +565,8 @@ int low_level_process_kill(process_t *process) {
     }
 
     // TODO
-    // I would like a check here if the process exists after a specified period
-    // of time. If it does, it should be killed with
+    // I would like a check here of whether the process exists after some
+    // specified periods of time. If it does, it should be killed with
     // kill((pid_t)process->pid, SIGKILL);
 
     // Remove its node from the list.
@@ -622,28 +622,58 @@ int process_kill(process_t *processes, char *string_pid) {
     return 0;
 }
 
-int process_stop() {
+int process_stop(process_t *processes, char *string_pid) {
     // Description
-    // This function TODO
+    // This function stops the process with PID equal to pid, provided it
+    // exists in the list processes, and sets its stopped status to 1.
     //
     // Returns
-    // process_stop returns TODO
+    // process_stop returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    int pid;
+    process_t *result;
+    process_t *process;
+    int return_value;  // integer placeholder for error checking
 
     // TODO Debug message.
     printf("process_stop called\n");
 
-    //// process_stop requires a valid PID.
-    //if (string_pid == NULL) {
-    //    printf("error, " ANSI_BOLD "stop" ANSI_RESET " requires a valid PID\n");
-    //    return 0;
-    //}
+    // process_stop requires a valid PID.
+    if (string_pid == NULL) {
+        printf("error, " ANSI_BOLD "stop" ANSI_RESET " requires a valid PID\n");
+        return 0;
+    }
 
-    // TODO Send a signal to stop a running process.
+    // Store the PID as an integer.
+    pid = atoi(string_pid);
+
+    // Search in list processes for a process with PID equal to pid.
+    return_value = list_search(processes, &result, pid);
+    if (return_value == -1) {
+        printf("error, list_search\n");
+        return -1;
+    } else if (return_value == 0) {
+        printf("no process with PID %d\n", pid);
+    } else {
+        process = result;
+        if (!(process->stopped)) {
+            // stop the process.
+            return_value = kill((pid_t)pid, SIGSTOP);
+            if (return_value == -1) {
+                perror("error, kill");
+                return -1;
+            }
+
+            // Set the stopped status of the process node to 1.
+            process->stopped = 1;
+        } else {
+            printf("the process with PID %d is already stopped\n", pid);
+        }
+    }
+
     return 0;
 }
-
 int process_cont() {
     // Description
     // This function TODO
@@ -851,7 +881,7 @@ int task_queue() {
         } else if (!strcmp(task, "kill") || !strcmp(task, "k")) {
             process_kill(processes, input[1]);
         } else if (!strcmp(task, "stop") || !strcmp(task, "s")) {
-            process_stop();
+            process_stop(processes, input[1]);
         } else if (!strcmp(task, "cont") || !strcmp(task, "c")) {
             process_cont();
         } else if (!strcmp(task, "list") || !strcmp(task, "l")) {
