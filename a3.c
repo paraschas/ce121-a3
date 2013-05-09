@@ -15,6 +15,8 @@
 // #define directives
 ////////////////////////////////////////////////////////////////////////////////
 #define MAX_INPUT_LENGTH 512
+#define MAX_LINE_LENGTH 80
+#define MAX_STATUS_LENGTH 16
 #define MAX_TASK_LENGTH 4
 #define MAX_PATH_LENGTH 512
 
@@ -465,19 +467,68 @@ int process_cont() {
     return 0;
 }
 
-int process_list() {
+int process_list(process_t *list) {
     // Description
-    // This function TODO
+    // This function prints a list of the process data, including the PID,
+    // the path used to execute the program, and its status.
     //
     // Returns
-    // process_list returns TODO
+    // process_list returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    process_t *node;
+    char status[MAX_STATUS_LENGTH + 1];
 
-    printf("process_list called\n");
-    // TODO printf a list of the processes, including for each process its PID,
-    // the path used to run the program (even better the stripped name of it),
-    // and its status.
+    if (list == NULL) {
+        // list should point to a valid list.
+        return -1;
+    }
+
+    printf("\n");
+
+    // top border
+    printf("+-------+----------+");
+    printf("------------------------------------------------------------");
+    printf("\n");
+
+    // table headers
+    printf("%c", '|');
+    printf("  PID  ");
+    printf("%c", '|');
+    printf("  status  ");
+    printf("%c", '|');
+    printf("  path  ");
+    /*printf("%c", '|');*/
+    printf("\n");
+
+    // separator
+    printf("+-------+----------+");
+    printf("------------------------------------------------------------");
+    printf("\n");
+
+    // process data
+    for (node = list->next; node != list; node = node->next) {
+        printf("%c", '|');
+        printf(" %5d ", node->pid);
+        printf("%c", '|');
+        if (node->stopped == 0) {
+            strcpy(status, "running");
+        } else {
+            strcpy(status, "stopped");
+        }
+        printf("  %s ", status);
+        printf("%c", '|');
+        printf(" %s ", node->path);
+        printf("\n");
+    }
+
+    // bottom border
+    printf("+-------+----------+");
+    printf("------------------------------------------------------------");
+    printf("\n");
+
+    printf("\n");
+
     return 0;
 }
 
@@ -517,14 +568,13 @@ int task_queue() {
     // task_queue returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    process_t *processes;
     char *raw_input;
     char **input;
     char task[MAX_INPUT_LENGTH + 1];
     const char space_tab[] = " \t";
     int return_value;  // integer placeholder for error checking
     int i;  // generic counter
-
-    process_t *processes;
 
     // TODO Clear the screen.
     /*clear_screen();*/
@@ -580,7 +630,7 @@ int task_queue() {
         } else if (!strcmp(task, "cont") || !strcmp(task, "c")) {
             process_cont();
         } else if (!strcmp(task, "list") || !strcmp(task, "l")) {
-            process_list();
+            process_list(processes);
         } else if (!strcmp(task, "info") || !strcmp(task, "i")) {
             process_info();
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
@@ -1210,6 +1260,73 @@ int test_list_search() {
     }
 }
 
+int test_process_list() {
+    // Description
+    // This function tests the process_list function.
+    //
+    // Returns
+    // test_process_list returns 0 on successful completion of all tests or
+    // -1 in case of any test or itself failing.
+
+    // variable declaration
+    process_t *processes;
+    int pid;
+    char path[MAX_PATH_LENGTH + 1];
+    int num_tests;  // number of tests
+    int num_passed;  // number of tests passed
+    int failed;  // boolean indicator that a test failed
+    int return_value;  // integer placeholder for error checking
+
+    printf("testing process_list\n");
+
+    num_tests = 0;
+    num_passed = 0;
+
+    // test 01
+    num_tests++;
+    failed = 0;
+
+    // Create the processes list.
+    processes = NULL;
+    return_value = list_create(&processes);
+    if (return_value == -1) {
+        printf("error, list_create\n");
+        return -1;
+    }
+
+    pid = 1;
+    strcpy(path, "./program");
+    return_value = list_add(processes, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    pid = 1000;
+    strcpy(path, "./program_prime");
+    return_value = list_add(processes, pid, path);
+    if (return_value == -1) {
+        printf("error, list_add\n");
+    }
+
+    return_value = process_list(processes);
+    if (return_value == -1) {
+        failed = 1;
+    }
+    // TODO_PRIME free memory
+
+    if (!failed) {
+        num_passed++;
+    }
+
+    if (num_passed == num_tests) {
+        printf("\tall tests passed\n");
+        return 0;
+    } else {
+        printf("\tat least one test failed\n");
+        return -1;
+    }
+}
+
 int test_all() {
     // Description
     // This function calls all the test functions of this program.
@@ -1303,13 +1420,15 @@ int main(int argc, char *argv[]) {
 
     /*test_list_search();*/
 
+    test_process_list();
+
     /*test_all();*/
 
-    int return_value;  // integer placeholder for error checking
-    return_value = task_queue();
-    if (return_value == -1) {
-        printf("error, task_queue\n");
-    }
+    //int return_value;  // integer placeholder for error checking
+    //return_value = task_queue();
+    //if (return_value == -1) {
+    //    printf("error, task_queue\n");
+    //}
 
     return 0;
 }
