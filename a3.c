@@ -418,9 +418,48 @@ int process_exec(process_t *processes, char *arguments[]) {
     // process_exec returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    int pid;
+    char path[MAX_PATH_LENGTH + 1];
+    int return_value;  // integer placeholder for error checking
 
+    // TODO Debug message.
     printf("process_exec called\n");
-    // TODO Create a new process.
+
+    // exec requires a valid path.
+    if (arguments[0] == NULL) {
+        printf("error, " ANSI_BOLD "exec" ANSI_RESET " requires a valid PATH\n");
+        return 0;
+    }
+
+    strcpy(path, arguments[0]);
+
+    // fork
+    return_value = (int)fork();
+    if (return_value == -1) {
+        perror("error, fork");
+        return -1;
+    } else if (return_value == 0) {
+        // child code
+        return_value = execv(path, arguments);
+        if (return_value == -1) {
+            perror("error, execv");
+            return -1;
+        }
+    } else {
+        // parent code
+        pid = return_value;
+        // TODO Search for the pid in the processes list before adding
+        // a new node.
+        // TODO Verify that exec* successfully executed the file in path.
+        // Maybe send a signal to the parent? Or check whether the child
+        // exited right after the exec* instruction?
+        return_value = list_add(processes, pid, path);
+        if (return_value == -1) {
+            printf("error, list_add\n");
+        }
+
+        /*printf("process with PID %d spawned\n", pid);*/
+    }
 
     return 0;
 }
@@ -434,7 +473,9 @@ int process_kill() {
 
     // variable declaration
 
+    // TODO Debug message.
     printf("process_kill called\n");
+
     // TODO Send a signal to kill a process.
     return 0;
 }
@@ -448,7 +489,9 @@ int process_stop() {
 
     // variable declaration
 
+    // TODO Debug message.
     printf("process_stop called\n");
+
     // TODO Send a signal to stop a running process.
     return 0;
 }
@@ -462,15 +505,17 @@ int process_cont() {
 
     // variable declaration
 
+    // TODO Debug message.
     printf("process_cont called\n");
+
     // TODO Send a signal to resume a stopped process.
     return 0;
 }
 
 int process_list(process_t *list) {
     // Description
-    // This function prints a list of the process data, including the PID,
-    // the path used to execute the program, and its status.
+    // This function prints a table of the process data, including its PID,
+    // its status, and the path used to execute the program.
     //
     // Returns
     // process_list returns 0 on successful completion or -1 in case of failure.
@@ -541,7 +586,9 @@ int process_info() {
 
     // variable declaration
 
+    // TODO Debug message.
     printf("process_info called\n");
+
     // TODO printf information about the process.
     return 0;
 }
@@ -555,7 +602,9 @@ int process_quit() {
 
     // variable declaration
 
+    // TODO Debug message.
     printf("process_quit called\n");
+
     // TODO kill all processes.
     return 0;
 }
@@ -622,7 +671,7 @@ int task_queue() {
 
         // Execute the command.
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
-            process_exec(processes, input);
+            process_exec(processes, &input[1]);
         } else if (!strcmp(task, "kill") || !strcmp(task, "k")) {
             process_kill();
         } else if (!strcmp(task, "stop") || !strcmp(task, "s")) {
@@ -1385,6 +1434,13 @@ int test_all() {
         num_passed++;
     }
 
+    // test_process_list
+    num_tests++;
+    return_value = test_process_list();
+    if (return_value == 0) {
+        num_passed++;
+    }
+
     if (num_passed == num_tests) {
         printf("\n");
         printf("all tests passed\n");
@@ -1420,15 +1476,15 @@ int main(int argc, char *argv[]) {
 
     /*test_list_search();*/
 
-    test_process_list();
+    /*test_process_list();*/
 
     /*test_all();*/
 
-    //int return_value;  // integer placeholder for error checking
-    //return_value = task_queue();
-    //if (return_value == -1) {
-    //    printf("error, task_queue\n");
-    //}
+    int return_value;  // integer placeholder for error checking
+    return_value = task_queue();
+    if (return_value == -1) {
+        printf("error, task_queue\n");
+    }
 
     return 0;
 }
