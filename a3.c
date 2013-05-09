@@ -671,13 +671,19 @@ int process_list(process_t *list) {
     printf("  status  ");
     printf("%c", '|');
     printf("  path  ");
-    /*printf("%c", '|');*/
     printf("\n");
 
     // separator
     printf("+-------+----------+");
     printf("------------------------------------------------------------");
     printf("\n");
+
+    if (list->next == list) {
+        // empty entry
+        printf("|       |          |");
+        printf("        ");
+        printf("\n");
+    }
 
     // process data
     for (node = list->next; node != list; node = node->next) {
@@ -799,7 +805,9 @@ int task_queue() {
             printf("error, str_split\n");
         }
 
-        strcpy(task, input[0]);
+        if (strlen(raw_input) != 0) {
+            strcpy(task, input[0]);
+        }
 
         // Execute the command.
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
@@ -816,6 +824,7 @@ int task_queue() {
             process_info();
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
             process_quit();
+        } else if (!strcmp(task, "")) {
         } else {
             printf("invalid command\n");
         }
