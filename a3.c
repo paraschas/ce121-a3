@@ -636,7 +636,7 @@ int test_str_split() {
     return_pointer = strdup("a");
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         string = return_pointer;
@@ -645,7 +645,7 @@ int test_str_split() {
     return_pointer = strdup(space_tab);
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         delimiters = return_pointer;
@@ -656,7 +656,7 @@ int test_str_split() {
             (size_t)(1 * sizeof(*expected_tokens)));
     if (return_pointer == NULL) {
         perror("error, realloc");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         expected_tokens = return_pointer;
@@ -666,7 +666,7 @@ int test_str_split() {
     return_pointer = strdup("a");
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         expected_tokens[0] = return_pointer;
@@ -684,7 +684,7 @@ int test_str_split() {
             num_passed++;
         }
     }
-    // TODO free memory
+    // TODO_PRIME free memory
 
     // test 02
     num_tests++;
@@ -693,7 +693,7 @@ int test_str_split() {
     return_pointer = strdup("a b c");
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         string = return_pointer;
@@ -702,7 +702,7 @@ int test_str_split() {
     return_pointer = strdup(space);
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         delimiters = return_pointer;
@@ -713,7 +713,7 @@ int test_str_split() {
             (size_t)(3 * sizeof(*expected_tokens)));
     if (return_pointer == NULL) {
         perror("error, realloc");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         expected_tokens = return_pointer;
@@ -723,7 +723,7 @@ int test_str_split() {
     return_pointer = strdup("a");
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         expected_tokens[0] = return_pointer;
@@ -733,7 +733,7 @@ int test_str_split() {
     return_pointer = strdup("b");
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         expected_tokens[1] = return_pointer;
@@ -743,7 +743,7 @@ int test_str_split() {
     return_pointer = strdup("c");
     if (return_pointer == NULL) {
         perror("error, strdup");
-        // TODO free memory
+        // TODO_PRIME free memory
         return -1;
     } else {
         expected_tokens[2] = return_pointer;
@@ -761,7 +761,7 @@ int test_str_split() {
             num_passed++;
         }
     }
-    // TODO free memory
+    // TODO_PRIME free memory
 
     if (num_passed == num_tests) {
         printf("\tall tests passed\n");
@@ -819,7 +819,7 @@ int test_list_create() {
             num_passed++;
         }
     }
-    // TODO free memory
+    // TODO_PRIME free memory
 
     if (num_passed == num_tests) {
         printf("\tall tests passed\n");
@@ -885,7 +885,7 @@ int test_list_add() {
             num_passed++;
         }
     }
-    // TODO free memory
+    // TODO_PRIME free memory
 
     if (num_passed == num_tests) {
         printf("\tall tests passed\n");
@@ -979,7 +979,7 @@ int test_list_remove() {
         num_passed++;
     }
 
-    // TODO free memory
+    // TODO_PRIME free memory
 
     if (num_passed == num_tests) {
         printf("\tall tests passed\n");
@@ -1055,7 +1055,7 @@ int test_list_print() {
     if (return_value == -1) {
         failed = 1;
     }
-    // TODO free memory
+    // TODO_PRIME free memory
 
     if (!failed) {
         num_passed++;
@@ -1196,7 +1196,7 @@ int test_list_search() {
         num_passed++;
     }
 
-    // TODO free memory
+    // TODO_PRIME free memory
 
     if (num_passed == num_tests) {
         printf("\tall tests passed\n");
