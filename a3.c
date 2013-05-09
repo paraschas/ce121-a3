@@ -409,25 +409,71 @@ int list_search(process_t *list, process_t **result, int pid) {
     }
 }
 
-int signal_handling() {
+int parent_signal_handling() {
     // Description
-    // This function contains the signal handling code of the application.
+    // This function contains the signal handling code of the parent process
+    // of the application. It blocks all signals.
     //
     // Returns
-    // signal_handling returns 0 on successful completion or
+    // parent_signal_handling returns 0 on successful completion or
     // -1 in case of failure.
 
     // variable declaration
     sigset_t signals_set;
     int return_value;  // integer placeholder for error checking
 
-    // Block all signals.
     return_value = sigfillset(&signals_set);
     if (return_value == -1) {
         perror("error, sigfillset");
         return -1;
     }
+
     return_value = sigprocmask(SIG_BLOCK, &signals_set, NULL);
+    if (return_value == -1) {
+        perror("error, sigprocmask");
+        return -1;
+    }
+
+    return 0;
+}
+
+int child_signal_handling() {
+    // Description
+    // This function contains the signal handling code of the child processes
+    // of the application. It unblocks the signals SIGTERM, SIGSTOP,
+    // and SIGCONT.
+    //
+    // Returns
+    // child_signal_handling returns 0 on successful completion or
+    // -1 in case of failure.
+
+    // variable declaration
+    sigset_t signals_set;
+    int return_value;  // integer placeholder for error checking
+
+    return_value = sigemptyset(&signals_set);
+    if (return_value == -1) {
+        perror("error, sigemptyset");
+        return -1;
+    }
+
+    return_value = sigaddset(&signals_set, SIGTERM);
+    if (return_value == -1) {
+        perror("error, sigaddset");
+        return -1;
+    }
+    return_value = sigaddset(&signals_set, SIGSTOP);
+    if (return_value == -1) {
+        perror("error, sigaddset");
+        return -1;
+    }
+    return_value = sigaddset(&signals_set, SIGCONT);
+    if (return_value == -1) {
+        perror("error, sigaddset");
+        return -1;
+    }
+
+    return_value = sigprocmask(SIG_UNBLOCK, &signals_set, NULL);
     if (return_value == -1) {
         perror("error, sigprocmask");
         return -1;
@@ -470,6 +516,11 @@ int process_exec(process_t *processes, char *arguments[]) {
         return -1;
     } else if (return_value == 0) {
         // child code
+        return_value = child_signal_handling();
+        if (return_value == -1) {
+            printf("error, child_signal_handling\n");
+        }
+
         return_value = execv(path, arguments);
         if (return_value == -1) {
             perror("error, execv");
@@ -527,9 +578,19 @@ int process_kill(process_t *processes, char *string_pid) {
     } else if (return_value == 0) {
         printf("no process with PID %d\n", pid);
     } else {
-        // TODO Send a signal to kill the process.
+        // kill the process.
+        return_value = kill((pid_t)pid, SIGTERM);
+        if (return_value == -1) {
+            perror("error, kill");
+            return -1;
+        }
 
-        // TODO Remove the node from the list.
+        // Remove its node from the list.
+        return_value = list_remove(result);
+        if (return_value == -1) {
+            printf("error, list_remove\n");
+            return -1;
+        }
     }
 
     return 0;
@@ -1509,6 +1570,7 @@ int main(int argc, char *argv[]) {
     // main returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    int return_value;  // integer placeholder for error checking
 
     /*test_str_split();*/
 
@@ -1526,9 +1588,11 @@ int main(int argc, char *argv[]) {
 
     /*test_all();*/
 
-    signal_handling();
+    return_value = parent_signal_handling();
+    if (return_value == -1) {
+        printf("error, parent_signal_handling\n");
+    }
 
-    int return_value;  // integer placeholder for error checking
     return_value = task_queue();
     if (return_value == -1) {
         printf("error, task_queue\n");
