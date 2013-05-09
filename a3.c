@@ -34,7 +34,7 @@ struct process_s {
     char *path;  // Path to the executable file.
     int stopped;  // Boolean indicator that the process has been stopped.
     struct process_s *next;  // The next node of the list.
-    struct process_s *prev;  // The previous node of the list.
+    struct process_s *previous;  // The previous node of the list.
 };
 typedef struct process_s process_t;
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +265,7 @@ int list_create(process_t **list) {
 
     // Pointer initialization.
     sentinel->next = sentinel;
-    sentinel->prev = sentinel;
+    sentinel->previous = sentinel;
 
     *list = sentinel;
 
@@ -311,8 +311,8 @@ int list_add(process_t *list, int pid, char *path) {
 
     // Add the node to the list.
     node->next = list->next;
-    node->prev = list;
-    list->next->prev = node;
+    node->previous = list;
+    list->next->previous = node;
     list->next = node;
 
     return 0;
@@ -328,14 +328,14 @@ int list_remove(process_t *node) {
 
     // variable declaration
 
-    if ((node == NULL) || (node->next == NULL) || (node->prev == NULL)){
+    if ((node == NULL) || (node->next == NULL) || (node->previous == NULL)){
         // node should point to a valid node residing in a list.
         return -1;
     }
 
     // Remove the node from the list.
-    node->next->prev = node->prev;
-    node->prev->next = node->next;
+    node->next->previous = node->previous;
+    node->previous->next = node->next;
 
     // Delete the node.
     free(node->path);
@@ -368,7 +368,7 @@ int list_print(process_t *list) {
         printf("\tpath: %s\n", node->path);
         printf("\tstopped: %d\n", node->stopped);
         printf("\tnext: %p\n", node->next);
-        printf("\tprev: %p\n", node->prev);
+        printf("\tprevious: %p\n", node->previous);
     }
 
     return 0;
@@ -805,7 +805,7 @@ int test_list_create() {
     expected_list.path = NULL;
     expected_list.stopped = 0;
     expected_list.next = NULL;
-    expected_list.prev = NULL;
+    expected_list.previous = NULL;
 
     list = NULL;
     return_value = list_create(&list);
@@ -815,7 +815,7 @@ int test_list_create() {
                 (list->path != expected_list.path) ||
                 (list->stopped != expected_list.stopped) ||
                 (list->next != list) ||
-                (list->prev != list)) {
+                (list->previous != list)) {
             failed = 1;
         }
         if (!failed) {
@@ -874,14 +874,14 @@ int test_list_add() {
                 (strcmp(list->next->path, path)) ||
                 (list->next->stopped != 0) ||
                 (list->next->next != list) ||
-                (list->next->prev != list)) {
+                (list->next->previous != list)) {
             failed = 1;
         }
-        if ((list->prev->pid != pid) ||
-                (strcmp(list->prev->path, path)) ||
-                (list->prev->stopped != 0) ||
-                (list->prev->next != list) ||
-                (list->prev->prev != list)) {
+        if ((list->previous->pid != pid) ||
+                (strcmp(list->previous->path, path)) ||
+                (list->previous->stopped != 0) ||
+                (list->previous->next != list) ||
+                (list->previous->previous != list)) {
             failed = 1;
         }
         if (!failed) {
