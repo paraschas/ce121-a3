@@ -534,9 +534,13 @@ int task_queue() {
     printf(ANSI_RED "Signal Controlled Execution Environment" ANSI_RESET);
     printf("\n");
 
-    // TODO Initialize the processes list.
+    // Create the processes list.
     processes = NULL;
-    // NEXT Call list_create.
+    return_value = list_create(&processes);
+    if (return_value == -1) {
+        printf("error, list_create\n");
+        return -1;
+    }
 
     strcpy(task, "");
     while (strcmp(task, "quit") && strcmp(task, "q")) {
@@ -549,7 +553,6 @@ int task_queue() {
         printf("    " ANSI_BOLD "list" ANSI_RESET "\n");
         printf("    " ANSI_BOLD "info" ANSI_RESET " <PID>\n");
         printf("    " ANSI_BOLD "quit" ANSI_RESET "\n");
-        /*printf("\n");*/
         printf("> ");
 
         // Get a command.
@@ -624,7 +627,7 @@ int test_str_split() {
     void *return_pointer;  // pointer placeholder for error checking
     int i;  // generic counter
 
-    printf("testing list_create\n");
+    printf("testing str_split\n");
 
     num_tests = 0;
     num_passed = 0;
@@ -1287,7 +1290,6 @@ int main(int argc, char *argv[]) {
     // main returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
-    /*int return_value;  // integer placeholder for error checking*/
 
     /*test_str_split();*/
 
@@ -1303,10 +1305,11 @@ int main(int argc, char *argv[]) {
 
     /*test_all();*/
 
-    //return_value = task_queue();
-    //if (return_value == -1) {
-    //    printf("error, task_queue\n");
-    //}
+    int return_value;  // integer placeholder for error checking
+    return_value = task_queue();
+    if (return_value == -1) {
+        printf("error, task_queue\n");
+    }
 
     return 0;
 }
