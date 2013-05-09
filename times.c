@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
     int return_value;  // integer placeholder for error checking
     int i;  // generic counter
 
-    printf("%s\n", PROGRAM_DESCRIPTION);
+    printf("\n%s\n", PROGRAM_DESCRIPTION);
 
     if (argc < 2) {
         delay = 4;
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
         time(&system_time);
         bd_time = localtime(&system_time);
 
-        printf("times: %02d:%02d:%02d, delay: %d\n",
+        printf("\n\ttimes: %02d:%02d:%02d, delay: %d\n",
                 bd_time->tm_hour, bd_time->tm_min, bd_time->tm_sec, delay);
         sleep(delay);
     }

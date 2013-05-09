@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     int return_value;  // integer placeholder for error checking
     int i;  // generic counter
 
-    printf("%s\n", PROGRAM_DESCRIPTION);
+    printf("\n%s\n", PROGRAM_DESCRIPTION);
 
     if (argc < 2) {
         delay = 4;
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
     }
 
     for (i = 0; i <= 128; i++) {
-        printf("integers: %d, delay: %d\n", i, delay);
+        printf("\n\tintegers: %d, delay: %d\n", i, delay);
         sleep(delay);
     }
 
