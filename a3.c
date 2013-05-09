@@ -703,6 +703,28 @@ int process_list(process_t *list) {
     return 0;
 }
 
+int process_info() {
+    // Description
+    // This function TODO
+    //
+    // Returns
+    // process_info returns TODO
+
+    // variable declaration
+
+    // TODO Debug message.
+    printf("process_info called\n");
+
+    //// process_info requires a valid PID.
+    //if (string_pid == NULL) {
+    //    printf("error, " ANSI_BOLD "info" ANSI_RESET " requires a valid PID\n");
+    //    return 0;
+    //}
+
+    // TODO printf information about the process.
+    return 0;
+}
+
 int process_quit() {
     // Description
     // This function TODO
@@ -760,6 +782,7 @@ int task_queue() {
         printf("    " ANSI_BOLD "stop" ANSI_RESET " <PID>\n");
         printf("    " ANSI_BOLD "cont" ANSI_RESET " <PID>\n");
         printf("    " ANSI_BOLD "list" ANSI_RESET "\n");
+        printf("    " ANSI_BOLD "info" ANSI_RESET " <PID>\n");
         printf("    " ANSI_BOLD "quit" ANSI_RESET "\n");
         printf("> ");
 
@@ -789,6 +812,8 @@ int task_queue() {
             process_cont();
         } else if (!strcmp(task, "list") || !strcmp(task, "l")) {
             process_list(processes);
+        } else if (!strcmp(task, "info") || !strcmp(task, "i")) {
+            process_info();
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
             process_quit();
         } else {
