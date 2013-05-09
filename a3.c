@@ -409,6 +409,33 @@ int list_search(process_t *list, process_t **result, int pid) {
     }
 }
 
+int signal_handling() {
+    // Description
+    // This function contains the signal handling code of the application.
+    //
+    // Returns
+    // signal_handling returns 0 on successful completion or
+    // -1 in case of failure.
+
+    // variable declaration
+    sigset_t signals_set;
+    int return_value;  // integer placeholder for error checking
+
+    // Block all signals.
+    return_value = sigfillset(&signals_set);
+    if (return_value == -1) {
+        perror("error, sigfillset");
+        return -1;
+    }
+    return_value = sigprocmask(SIG_BLOCK, &signals_set, NULL);
+    if (return_value == -1) {
+        perror("error, sigprocmask");
+        return -1;
+    }
+
+    return 0;
+}
+
 int process_exec(process_t *processes, char *arguments[]) {
     // Description
     // This function spawns a new process of the executable file specified in
@@ -1498,6 +1525,8 @@ int main(int argc, char *argv[]) {
     /*test_process_list();*/
 
     /*test_all();*/
+
+    signal_handling();
 
     int return_value;  // integer placeholder for error checking
     return_value = task_queue();
