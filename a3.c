@@ -10,6 +10,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <signal.h>
 ////////////////////////////////////////////////////////////////////////////////
 
 // #define directives
@@ -419,18 +420,20 @@ int process_exec(process_t *processes, char *arguments[]) {
 
     // variable declaration
     int pid;
+    /*pid_t pid;*/
     char path[MAX_PATH_LENGTH + 1];
     int return_value;  // integer placeholder for error checking
 
     // TODO Debug message.
     printf("process_exec called\n");
 
-    // exec requires a valid path.
+    // process_exec requires a valid path.
     if (arguments[0] == NULL) {
         printf("error, " ANSI_BOLD "exec" ANSI_RESET " requires a valid PATH\n");
         return 0;
     }
 
+    // Store the path to the executable file.
     strcpy(path, arguments[0]);
 
     // fork
@@ -464,19 +467,44 @@ int process_exec(process_t *processes, char *arguments[]) {
     return 0;
 }
 
-int process_kill() {
+int process_kill(process_t *processes, char *string_pid) {
     // Description
-    // This function TODO
+    // This function kills the process with PID equal to pid, provided it
+    // exists in the list processes, and removes its node from it.
     //
     // Returns
-    // process_kill returns TODO
+    // process_kill returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    int pid;
+    process_t *result;
+    int return_value;  // integer placeholder for error checking
 
     // TODO Debug message.
     printf("process_kill called\n");
 
-    // TODO Send a signal to kill a process.
+    // process_kill requires a valid PID.
+    if (string_pid == NULL) {
+        printf("error, " ANSI_BOLD "kill" ANSI_RESET " requires a valid PID\n");
+        return 0;
+    }
+
+    // Store the PID as an integer.
+    pid = atoi(string_pid);
+
+    // Search in list processes for a process with PID equal to pid.
+    return_value = list_search(processes, &result, pid);
+    if (return_value == -1) {
+        printf("error, list_search\n");
+        return -1;
+    } else if (return_value == 0) {
+        printf("no process with PID %d\n", pid);
+    } else {
+        // TODO Send a signal to kill the process.
+
+        // TODO Remove the node from the list.
+    }
+
     return 0;
 }
 
@@ -491,6 +519,12 @@ int process_stop() {
 
     // TODO Debug message.
     printf("process_stop called\n");
+
+    //// process_stop requires a valid PID.
+    //if (string_pid == NULL) {
+    //    printf("error, " ANSI_BOLD "stop" ANSI_RESET " requires a valid PID\n");
+    //    return 0;
+    //}
 
     // TODO Send a signal to stop a running process.
     return 0;
@@ -507,6 +541,12 @@ int process_cont() {
 
     // TODO Debug message.
     printf("process_cont called\n");
+
+    //// process_cont requires a valid PID.
+    //if (string_pid == NULL) {
+    //    printf("error, " ANSI_BOLD "cont" ANSI_RESET " requires a valid PID\n");
+    //    return 0;
+    //}
 
     // TODO Send a signal to resume a stopped process.
     return 0;
@@ -654,7 +694,7 @@ int task_queue() {
         if (!strcmp(task, "exec") || !strcmp(task, "e")) {
             process_exec(processes, &input[1]);
         } else if (!strcmp(task, "kill") || !strcmp(task, "k")) {
-            process_kill();
+            process_kill(processes, input[1]);
         } else if (!strcmp(task, "stop") || !strcmp(task, "s")) {
             process_stop();
         } else if (!strcmp(task, "cont") || !strcmp(task, "c")) {
