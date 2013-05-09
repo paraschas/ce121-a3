@@ -625,7 +625,8 @@ int process_kill(process_t *processes, char *string_pid) {
 int process_stop(process_t *processes, char *string_pid) {
     // Description
     // This function stops the process with PID equal to pid, provided it
-    // exists in the list processes, and sets its stopped status to 1.
+    // exists in the list processes and isn't already stopped, and sets its
+    // stopped status to 1.
     //
     // Returns
     // process_stop returns 0 on successful completion or -1 in case of failure.
@@ -658,7 +659,7 @@ int process_stop(process_t *processes, char *string_pid) {
     } else {
         process = result;
         if (!(process->stopped)) {
-            // stop the process.
+            // Stop the process.
             return_value = kill((pid_t)pid, SIGSTOP);
             if (return_value == -1) {
                 perror("error, kill");
@@ -674,25 +675,58 @@ int process_stop(process_t *processes, char *string_pid) {
 
     return 0;
 }
-int process_cont() {
+
+int process_cont(process_t *processes, char *string_pid) {
     // Description
-    // This function TODO
+    // This function resumes the process with PID equal to pid, provided it
+    // exists in the list processes and isn't already running, and sets its
+    // stopped status to 0.
     //
     // Returns
-    // process_cont returns TODO
+    // process_cont returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    int pid;
+    process_t *result;
+    process_t *process;
+    int return_value;  // integer placeholder for error checking
 
     // TODO Debug message.
     printf("process_cont called\n");
 
-    //// process_cont requires a valid PID.
-    //if (string_pid == NULL) {
-    //    printf("error, " ANSI_BOLD "cont" ANSI_RESET " requires a valid PID\n");
-    //    return 0;
-    //}
+    // process_cont requires a valid PID.
+    if (string_pid == NULL) {
+        printf("error, " ANSI_BOLD "cont" ANSI_RESET " requires a valid PID\n");
+        return 0;
+    }
 
-    // TODO Send a signal to resume a stopped process.
+    // Store the PID as an integer.
+    pid = atoi(string_pid);
+
+    // Search in list processes for a process with PID equal to pid.
+    return_value = list_search(processes, &result, pid);
+    if (return_value == -1) {
+        printf("error, list_search\n");
+        return -1;
+    } else if (return_value == 0) {
+        printf("no process with PID %d\n", pid);
+    } else {
+        process = result;
+        if (process->stopped) {
+            // Resume the process.
+            return_value = kill((pid_t)pid, SIGCONT);
+            if (return_value == -1) {
+                perror("error, kill");
+                return -1;
+            }
+
+            // Set the stopped status of the process node to 0.
+            process->stopped = 0;
+        } else {
+            printf("the process with PID %d is already running\n", pid);
+        }
+    }
+
     return 0;
 }
 
@@ -883,7 +917,7 @@ int task_queue() {
         } else if (!strcmp(task, "stop") || !strcmp(task, "s")) {
             process_stop(processes, input[1]);
         } else if (!strcmp(task, "cont") || !strcmp(task, "c")) {
-            process_cont();
+            process_cont(processes, input[1]);
         } else if (!strcmp(task, "list") || !strcmp(task, "l")) {
             process_list(processes);
         } else if (!strcmp(task, "info") || !strcmp(task, "i")) {
