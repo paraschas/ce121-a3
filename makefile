@@ -3,14 +3,14 @@ CFLAGS = -Wall -g
 
 .PHONY: all
 
-all: a3 seconds times
+all: a3 integers times
 	@echo "done"
 
 a3:
 	$(CC) $(CFLAGS) a3.c -o a3
 
-seconds:
-	$(CC) $(CFLAGS) seconds.c -o seconds
+integers:
+	$(CC) $(CFLAGS) integers.c -o integers
 
 times:
 	$(CC) $(CFLAGS) times.c -o times
