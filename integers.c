@@ -1,9 +1,9 @@
-// file seconds.c
+// file integers.c
 ////////////////////////////////////////////////////////////////////////////////
 // Description
 // A simple program that prints to stdout the integers from 1 to 1024 in
 // ascending order, one every 4 seconds or the number of seconds given as
-// an argument. This value must be in the range [1, 64]."
+// an argument. This value must be in the range [1, 32].
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
@@ -15,7 +15,7 @@
 
 // #define directives
 ////////////////////////////////////////////////////////////////////////////////
-#define PROGRAM_DESCRIPTION "A simple program that prints to stdout the integers from 1 to 1024 in ascending order, one every 4 seconds or the number of seconds given as an argument. This value must be in the range [1, 64]."
+#define PROGRAM_DESCRIPTION "A simple program that prints to stdout the integers from 1 to 1024 in ascending order, one every 4 seconds or the number of seconds given as an argument. This value must be in the range [1, 32]."
 ////////////////////////////////////////////////////////////////////////////////
 
 // custom data types
@@ -49,9 +49,9 @@ int main(int argc, char *argv[]) {
     // main returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
-    int delay;  // Number of seconds to wait between successive outputs.
-    int return_value;  // Integer placeholder for error checking.
-    int i;  // Generic counter.
+    int delay;  // number of seconds to wait between successive outputs
+    int return_value;  // integer placeholder for error checking
+    int i;  // generic counter
 
     printf("%s\n", PROGRAM_DESCRIPTION);
 
@@ -59,9 +59,9 @@ int main(int argc, char *argv[]) {
         delay = 4;
     } else {
         return_value = atoi(argv[1]);
-        if ((return_value <= 0) || (return_value > 64)) {
+        if ((return_value <= 0) || (return_value > 32)) {
             // The number of seconds between successive outputs must be in
-            // the range [1, 64].
+            // the range [1, 32].
             delay = 4;
         } else {
             delay = return_value;
