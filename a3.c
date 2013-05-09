@@ -545,6 +545,40 @@ int process_exec(process_t *processes, char *arguments[]) {
     return 0;
 }
 
+int low_level_process_kill(process_t *process) {
+    // Description
+    // This function kills the process process and removes its node from
+    // the list it resides.
+    //
+    // Returns
+    // low_level_process_kill returns 0 on successful completion
+    // or -1 in case of failure.
+
+    // variable declaration
+    int return_value;  // integer placeholder for error checking
+
+    // kill the process.
+    return_value = kill((pid_t)process->pid, SIGTERM);
+    if (return_value == -1) {
+        perror("error, kill");
+        return -1;
+    }
+
+    // TODO
+    // I would like a check here if the process exists after a specified period
+    // of time. If it does, it should be killed with
+    // kill((pid_t)process->pid, SIGKILL);
+
+    // Remove its node from the list.
+    return_value = list_remove(process);
+    if (return_value == -1) {
+        printf("error, list_remove\n");
+        return -1;
+    }
+
+    return 0;
+}
+
 int process_kill(process_t *processes, char *string_pid) {
     // Description
     // This function kills the process with PID equal to pid, provided it
@@ -578,17 +612,9 @@ int process_kill(process_t *processes, char *string_pid) {
     } else if (return_value == 0) {
         printf("no process with PID %d\n", pid);
     } else {
-        // kill the process.
-        return_value = kill((pid_t)pid, SIGTERM);
+        return_value = low_level_process_kill(result);
         if (return_value == -1) {
-            perror("error, kill");
-            return -1;
-        }
-
-        // Remove its node from the list.
-        return_value = list_remove(result);
-        if (return_value == -1) {
-            printf("error, list_remove\n");
+            printf("error, low_level_process_kill\n");
             return -1;
         }
     }
@@ -731,7 +757,7 @@ int process_info() {
     return 0;
 }
 
-int process_quit() {
+int process_quit(process_t *list) {
     // Description
     // This function TODO
     //
@@ -739,11 +765,21 @@ int process_quit() {
     // process_quit returns TODO
 
     // variable declaration
+    process_t *node;
+    int return_value;  // integer placeholder for error checking
 
     // TODO Debug message.
     printf("process_quit called\n");
 
-    // TODO kill all processes.
+    // kill all processes.
+    for (node = list->next; node != list; node = node->next) {
+        return_value = low_level_process_kill(node);
+        if (return_value == -1) {
+            printf("error, low_level_process_kill\n");
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -823,7 +859,7 @@ int task_queue() {
         } else if (!strcmp(task, "info") || !strcmp(task, "i")) {
             process_info();
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
-            process_quit();
+            process_quit(processes);
         } else if (!strcmp(task, "")) {
         } else {
             printf("invalid command\n");
