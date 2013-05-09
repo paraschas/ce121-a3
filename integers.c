@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
     }
 
     for (i = 0; i <= 1024; i++) {
-        printf("integers: %d\n", i);
+        printf("integers: %d, delay: %d\n", i, delay);
         sleep(delay);
     }
 

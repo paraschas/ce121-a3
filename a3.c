@@ -572,8 +572,6 @@ int process_list(process_t *list) {
     printf("------------------------------------------------------------");
     printf("\n");
 
-    printf("\n");
-
     return 0;
 }
 

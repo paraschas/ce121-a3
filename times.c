@@ -76,8 +76,8 @@ int main(int argc, char *argv[]) {
         time(&system_time);
         bd_time = localtime(&system_time);
 
-        printf("times: %02d:%02d:%02d\n",
-                bd_time->tm_hour, bd_time->tm_min, bd_time->tm_sec);
+        printf("times: %02d:%02d:%02d, delay: %d\n",
+                bd_time->tm_hour, bd_time->tm_min, bd_time->tm_sec, delay);
         sleep(delay);
     }
 
