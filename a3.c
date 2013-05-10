@@ -74,8 +74,6 @@ int list_print(process_t *list);
 int list_search(process_t *list, process_t **result, int pid);
 int parent_signal_handling();
 int child_signal_handling();
-int block_child_signal();
-int unblock_child_signal();
 int process_exec(process_t *processes, char *arguments[]);
 int low_level_process_kill(process_t *process);
 int process_kill(process_t *processes, char *string_pid);
@@ -552,72 +550,6 @@ int child_signal_handling() {
         return -1;
     }
     return_value = sigaddset(&signals_set, SIGUSR1);
-    if (return_value == -1) {
-        perror("error, sigaddset");
-        return -1;
-    }
-
-    return_value = sigprocmask(SIG_UNBLOCK, &signals_set, NULL);
-    if (return_value == -1) {
-        perror("error, sigprocmask");
-        return -1;
-    }
-
-    return 0;
-}
-
-int block_child_signal() {
-    // Description
-    // This function blocks the signal SIGCHLD.
-    //
-    // Returns
-    // block_child_signal returns 0 on successful completion or
-    // -1 in case of failure.
-
-    // variable declaration
-    sigset_t signals_set;
-    int return_value;  // integer placeholder for error checking
-
-    return_value = sigemptyset(&signals_set);
-    if (return_value == -1) {
-        perror("error, sigemptyset");
-        return -1;
-    }
-
-    return_value = sigaddset(&signals_set, SIGCHLD);
-    if (return_value == -1) {
-        perror("error, sigaddset");
-        return -1;
-    }
-
-    return_value = sigprocmask(SIG_BLOCK, &signals_set, NULL);
-    if (return_value == -1) {
-        perror("error, sigprocmask");
-        return -1;
-    }
-
-    return 0;
-}
-
-int unblock_child_signal() {
-    // Description
-    // This function unblocks the signal SIGCHLD.
-    //
-    // Returns
-    // unblock_child_signal returns 0 on successful completion or
-    // -1 in case of failure.
-
-    // variable declaration
-    sigset_t signals_set;
-    int return_value;  // integer placeholder for error checking
-
-    return_value = sigemptyset(&signals_set);
-    if (return_value == -1) {
-        perror("error, sigemptyset");
-        return -1;
-    }
-
-    return_value = sigaddset(&signals_set, SIGCHLD);
     if (return_value == -1) {
         perror("error, sigaddset");
         return -1;
