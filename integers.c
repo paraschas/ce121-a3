@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <signal.h>
 ////////////////////////////////////////////////////////////////////////////////
 
 // #define directives
@@ -32,6 +33,9 @@
 
 // functions
 ////////////////////////////////////////////////////////////////////////////////
+static void signal_handler(int signal_received) {
+    write(1, "signal received\n", 16);
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 // tests
@@ -49,9 +53,17 @@ int main(int argc, char *argv[]) {
     // main returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    struct sigaction action = { {0} };
     int delay;  // number of seconds to wait between successive outputs
     int return_value;  // integer placeholder for error checking
     int i;  // generic counter
+
+    action.sa_handler = signal_handler;
+    return_value = sigaction(SIGUSR1, &action, NULL);
+    if (return_value == -1) {
+        perror("error, sigaction");
+        return -1;
+    }
 
     printf("\n%s\n", PROGRAM_DESCRIPTION);
 

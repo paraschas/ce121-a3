@@ -440,8 +440,8 @@ int parent_signal_handling() {
 int child_signal_handling() {
     // Description
     // This function contains the signal handling code of the child processes
-    // of the application. It unblocks the signals SIGTERM, SIGSTOP,
-    // and SIGCONT.
+    // of the application. It unblocks the signals SIGTERM, SIGSTOP, SIGCONT,
+    // and SIGUSR1.
     //
     // Returns
     // child_signal_handling returns 0 on successful completion or
@@ -468,6 +468,11 @@ int child_signal_handling() {
         return -1;
     }
     return_value = sigaddset(&signals_set, SIGCONT);
+    if (return_value == -1) {
+        perror("error, sigaddset");
+        return -1;
+    }
+    return_value = sigaddset(&signals_set, SIGUSR1);
     if (return_value == -1) {
         perror("error, sigaddset");
         return -1;
@@ -879,25 +884,48 @@ int process_list(process_t *list) {
     return 0;
 }
 
-int process_info() {
+int process_info(process_t *processes, char *string_pid) {
     // Description
-    // This function TODO
+    // This function sends the signal SIGUSR1 to the process with PID equal to
+    // pid, provided it exists in the list processes. It subsequently prints
+    // TODO information about the process.
     //
     // Returns
-    // process_info returns TODO
+    // process_info returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
+    int pid;
+    process_t *result;
+    int return_value;  // integer placeholder for error checking
 
     // TODO Debug message.
     printf("process_info called\n");
 
-    //// process_info requires a valid PID.
-    //if (string_pid == NULL) {
-    //    printf("error, " ANSI_BOLD "info" ANSI_RESET " requires a valid PID\n");
-    //    return 0;
-    //}
+    // process_stop requires a valid PID.
+    if (string_pid == NULL) {
+        printf("error, " ANSI_BOLD "info" ANSI_RESET " requires a valid PID\n");
+        return 0;
+    }
 
-    // TODO printf information about the process.
+    // Store the PID as an integer.
+    pid = atoi(string_pid);
+
+    // Search in list processes for a process with PID equal to pid.
+    return_value = list_search(processes, &result, pid);
+    if (return_value == -1) {
+        printf("error, list_search\n");
+        return -1;
+    } else if (return_value == 0) {
+        printf("no process with PID %d\n", pid);
+    } else {
+        // Send the signal SIGUSR1 to the process.
+        return_value = kill((pid_t)pid, SIGUSR1);
+        if (return_value == -1) {
+            perror("error, kill");
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -1001,7 +1029,7 @@ int task_queue() {
         } else if (!strcmp(task, "list") || !strcmp(task, "l")) {
             process_list(processes);
         } else if (!strcmp(task, "info") || !strcmp(task, "i")) {
-            process_info();
+            process_info(processes, input[1]);
         } else if (!strcmp(task, "quit") || !strcmp(task, "q")) {
             process_quit(processes);
         } else if (!strcmp(task, "")) {
