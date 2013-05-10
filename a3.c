@@ -1,7 +1,12 @@
 // file a3.c
 ////////////////////////////////////////////////////////////////////////////////
 // Description
+// This application implements an execution environment in which signals are
+// used to stop, resume, terminate, and get information from spawned child
+// processes.
+//
 // TODO
+// Search and do DO_IT tasks.
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
@@ -51,6 +56,23 @@ typedef struct process_s process_t;
 int get_input(char **input, const int max_length);
 int str_split(const char *str, char ***tokens, const char *delimiters);
 void clear_screen();
+int list_create(process_t **list);
+int list_add(process_t *list, int pid, char *path);
+int list_remove(process_t *node);
+int list_print(process_t *list);
+int list_search(process_t *list, process_t **result, int pid);
+int parent_signal_handling();
+int child_signal_handling();
+int block_child_signal();
+int unblock_child_signal();
+int process_exec(process_t *processes, char *arguments[]);
+int low_level_process_kill(process_t *process);
+int process_kill(process_t *processes, char *string_pid);
+int process_stop(process_t *processes, char *string_pid);
+int process_cont(process_t *processes, char *string_pid);
+int process_list(process_t *list);
+int process_info(process_t *processes, char *string_pid);
+int process_quit(process_t *list);
 int task_queue();
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -563,8 +585,7 @@ int process_exec(process_t *processes, char *arguments[]) {
     // process_exec returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
-    int pid;
-    /*pid_t pid;*/
+    int pid; // TODO Should it be pid_t instead?
     char path[MAX_PATH_LENGTH + 1];
     int return_value;  // integer placeholder for error checking
 
@@ -599,15 +620,15 @@ int process_exec(process_t *processes, char *arguments[]) {
         return_value = execv(path, arguments);
         if (return_value == -1) {
             perror("error, execv");
-            return -1;
+            exit(-1);
         }
     } else {
         // parent code
         pid = return_value;
 
         // TODO Verify that exec* successfully executed the file in path.
-        // Maybe send a signal to the parent? Or check whether the child
-        // exited right after the exec* instruction?
+        // Maybe check whether the child exited right after the exec*
+        // instruction?
 
         return_value = list_add(processes, pid, path);
         if (return_value == -1) {
@@ -647,7 +668,7 @@ int low_level_process_kill(process_t *process) {
     }
 
     // TODO
-    // I would like a check here of whether the process exists after some
+    // I would like a check here of whether the process exists after several
     // specified periods of time. If it does, it should be killed with
     // kill((pid_t)process->pid, SIGKILL);
 
@@ -925,10 +946,10 @@ int process_info(process_t *processes, char *string_pid) {
 
 int process_quit(process_t *list) {
     // Description
-    // This function TODO
+    // This function kills all spawned processes that are still running.
     //
     // Returns
-    // process_quit returns TODO
+    // process_quit returns 0 on successful completion or -1 in case of failure.
 
     // variable declaration
     process_t *node;
@@ -948,7 +969,8 @@ int process_quit(process_t *list) {
 
 int task_queue() {
     // Description
-    // This function TODO
+    // This function sets up the execution environment, prints the interface
+    // of the application, and executes the tasks requested by the user.
     //
     // Returns
     // task_queue returns 0 on successful completion or -1 in case of failure.
@@ -962,7 +984,7 @@ int task_queue() {
     int return_value;  // integer placeholder for error checking
     int i;  // generic counter
 
-    // TODO Clear the screen.
+    // DO_IT Clear the screen.
     /*clear_screen();*/
 
     // Print a welcome message.
@@ -1052,12 +1074,11 @@ int test_str_split() {
 
     // variable declaration
     char *string;
-    /*char **strings;*/
     char **tokens;
     char *delimiters;
     char **expected_tokens;
     const char space[] = " ";
-    /*const char tab[] = "\t";*/
+    //const char tab[] = "\t";  // not used yet
     const char space_tab[] = " \t";
     int num_tests;  // number of tests
     int num_passed;  // number of tests passed
@@ -1797,7 +1818,8 @@ int test_all() {
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[]) {
     // Description
-    // The main function TODO
+    // The main function acts as a wrapper of the functions that implement
+    // the application functionality.
     //
     // Returns
     // main returns 0 on successful completion or -1 in case of failure.
