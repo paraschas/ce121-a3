@@ -9,6 +9,10 @@
 // The commands can be requested using just the first letter of their name.
 // Once compiled, the integers and times programs can be executed via their
 // i and t symbolic links, respectively.
+//
+// TODO
+// One last thing I'd like to add is to automatically remove the entries in
+// the process list of processes that have terminated, maybe once every second.
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
