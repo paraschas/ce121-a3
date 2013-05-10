@@ -5,6 +5,11 @@
 // used to stop, resume, terminate, and get information from spawned child
 // processes.
 //
+// NOTE
+// The commands can be requested using just the first letter of their name.
+// Once compiled, the integers and times programs can be executed via their
+// i and t symbolic links, respectively.
+//
 // TODO
 // Search and do DO_IT tasks.
 ////////////////////////////////////////////////////////////////////////////////
