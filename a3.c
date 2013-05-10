@@ -890,6 +890,12 @@ int process_info(process_t *processes, char *string_pid) {
     // pid, provided it exists in the list processes. It subsequently prints
     // TODO information about the process.
     //
+    // NOTE
+    // I'd prefer to implement this with the child sending back the signal
+    // SIGCHLD and having a handler for it in the parent. SIGCHLD fills in
+    // some elements of the sigaction struct providing information about
+    // the child.
+    //
     // Returns
     // process_info returns 0 on successful completion or -1 in case of failure.
 

@@ -25,6 +25,9 @@
 
 // global variable declaration
 ////////////////////////////////////////////////////////////////////////////////
+static volatile sig_atomic_t counter = 0;  // number of outputs
+static volatile sig_atomic_t delay = 4;  // number of seconds to wait between
+        // successive outputs
 ////////////////////////////////////////////////////////////////////////////////
 
 // function prototypes
@@ -34,7 +37,26 @@
 // functions
 ////////////////////////////////////////////////////////////////////////////////
 static void signal_handler(int signal_received) {
-    write(1, "signal received\n", 16);
+    // Description
+    // This function is the signal handler for SIGUSR1.
+    //
+    // NOTE
+    // I'd prefer to avoid using the non async-signal-safe function printf here,
+    // but instead use write multiple times, calculating the length of counter
+    // and delay values as strings with simple comparisons.
+    //
+    // NOTE
+    // Of course sending back a signal to the parent is a still superior
+    // implementation.
+    //
+    // Returns
+    // child_signal_handling returns 0 on successful completion or
+    // -1 in case of failure.
+
+    // variable declaration
+
+    printf("\n\tintegers, delay %d: %d outputs so far, doing just fine\n",
+            delay, counter);
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -54,9 +76,7 @@ int main(int argc, char *argv[]) {
 
     // variable declaration
     struct sigaction action = { {0} };
-    int delay;  // number of seconds to wait between successive outputs
     int return_value;  // integer placeholder for error checking
-    int i;  // generic counter
 
     action.sa_handler = signal_handler;
     return_value = sigaction(SIGUSR1, &action, NULL);
@@ -68,20 +88,20 @@ int main(int argc, char *argv[]) {
     printf("\n%s\n", PROGRAM_DESCRIPTION);
 
     if (argc < 2) {
-        delay = 4;
+        /*delay = 4;  // redundant*/
     } else {
         return_value = atoi(argv[1]);
         if ((return_value <= 0) || (return_value > 32)) {
             // The number of seconds between successive outputs must be in
             // the range [1, 32].
-            delay = 4;
+            /*delay = 4;  // redundant*/
         } else {
             delay = return_value;
         }
     }
 
-    for (i = 0; i <= 128; i++) {
-        printf("\n\tintegers: %d, delay: %d\n", i, delay);
+    for (counter = 0; counter <= 128; counter++) {
+        printf("\n\tintegers, delay %d: %d\n", delay, counter);
         sleep(delay);
     }
 
