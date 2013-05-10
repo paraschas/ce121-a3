@@ -482,6 +482,72 @@ int child_signal_handling() {
     return 0;
 }
 
+int block_child_signal() {
+    // Description
+    // This function blocks the signal SIGCHLD.
+    //
+    // Returns
+    // block_child_signal returns 0 on successful completion or
+    // -1 in case of failure.
+
+    // variable declaration
+    sigset_t signals_set;
+    int return_value;  // integer placeholder for error checking
+
+    return_value = sigemptyset(&signals_set);
+    if (return_value == -1) {
+        perror("error, sigemptyset");
+        return -1;
+    }
+
+    return_value = sigaddset(&signals_set, SIGCHLD);
+    if (return_value == -1) {
+        perror("error, sigaddset");
+        return -1;
+    }
+
+    return_value = sigprocmask(SIG_BLOCK, &signals_set, NULL);
+    if (return_value == -1) {
+        perror("error, sigprocmask");
+        return -1;
+    }
+
+    return 0;
+}
+
+int unblock_child_signal() {
+    // Description
+    // This function unblocks the signal SIGCHLD.
+    //
+    // Returns
+    // unblock_child_signal returns 0 on successful completion or
+    // -1 in case of failure.
+
+    // variable declaration
+    sigset_t signals_set;
+    int return_value;  // integer placeholder for error checking
+
+    return_value = sigemptyset(&signals_set);
+    if (return_value == -1) {
+        perror("error, sigemptyset");
+        return -1;
+    }
+
+    return_value = sigaddset(&signals_set, SIGCHLD);
+    if (return_value == -1) {
+        perror("error, sigaddset");
+        return -1;
+    }
+
+    return_value = sigprocmask(SIG_UNBLOCK, &signals_set, NULL);
+    if (return_value == -1) {
+        perror("error, sigprocmask");
+        return -1;
+    }
+
+    return 0;
+}
+
 int process_exec(process_t *processes, char *arguments[]) {
     // Description
     // This function spawns a new process of the executable file specified in
@@ -509,6 +575,13 @@ int process_exec(process_t *processes, char *arguments[]) {
     // Store the path to the executable file.
     strcpy(path, arguments[0]);
 
+    // TODO Maybe use this to check whether the child exited right after
+    // the exec*.
+    //return_value = unblock_child_signal();
+    //if (return_value == -1) {
+    //    printf("error, unblock_child_signal\n");
+    //}
+
     // fork
     return_value = (int)fork();
     if (return_value == -1) {
@@ -529,17 +602,24 @@ int process_exec(process_t *processes, char *arguments[]) {
     } else {
         // parent code
         pid = return_value;
-        // TODO Search for the pid in the processes list before adding
-        // a new node.
+
         // TODO Verify that exec* successfully executed the file in path.
         // Maybe send a signal to the parent? Or check whether the child
         // exited right after the exec* instruction?
+
         return_value = list_add(processes, pid, path);
         if (return_value == -1) {
             printf("error, list_add\n");
         }
 
-        /*printf("process with PID %d spawned\n", pid);*/
+        // TODO Maybe use this to check whether the child exited right after
+        // the exec*.
+        //return_value = block_child_signal();
+        //if (return_value == -1) {
+        //    printf("error, block_child_signal\n");
+        //}
+
+        printf("process with PID %d spawned\n", pid);
     }
 
     return 0;
