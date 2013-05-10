@@ -50,8 +50,7 @@ static void signal_handler(int signal_received) {
     // implementation.
     //
     // Returns
-    // child_signal_handling returns 0 on successful completion or
-    // -1 in case of failure.
+    // signal_handler does not return any value.
 
     // variable declaration
 

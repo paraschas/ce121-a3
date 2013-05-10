@@ -568,9 +568,6 @@ int process_exec(process_t *processes, char *arguments[]) {
     char path[MAX_PATH_LENGTH + 1];
     int return_value;  // integer placeholder for error checking
 
-    // TODO Debug message.
-    printf("process_exec called\n");
-
     // process_exec requires a valid path.
     if (arguments[0] == NULL) {
         printf("error, " ANSI_BOLD "exec" ANSI_RESET " requires a valid PATH\n");
@@ -654,6 +651,9 @@ int low_level_process_kill(process_t *process) {
     // specified periods of time. If it does, it should be killed with
     // kill((pid_t)process->pid, SIGKILL);
 
+    // NOTE
+    // I would like to stop killed child processes becoming defunct.
+
     // Remove its node from the list.
     return_value = list_remove(process);
     if (return_value == -1) {
@@ -676,9 +676,6 @@ int process_kill(process_t *processes, char *string_pid) {
     int pid;
     process_t *result;
     int return_value;  // integer placeholder for error checking
-
-    // TODO Debug message.
-    printf("process_kill called\n");
 
     // process_kill requires a valid PID.
     if (string_pid == NULL) {
@@ -721,9 +718,6 @@ int process_stop(process_t *processes, char *string_pid) {
     process_t *result;
     process_t *process;
     int return_value;  // integer placeholder for error checking
-
-    // TODO Debug message.
-    printf("process_stop called\n");
 
     // process_stop requires a valid PID.
     if (string_pid == NULL) {
@@ -775,9 +769,6 @@ int process_cont(process_t *processes, char *string_pid) {
     process_t *result;
     process_t *process;
     int return_value;  // integer placeholder for error checking
-
-    // TODO Debug message.
-    printf("process_cont called\n");
 
     // process_cont requires a valid PID.
     if (string_pid == NULL) {
@@ -904,9 +895,6 @@ int process_info(process_t *processes, char *string_pid) {
     process_t *result;
     int return_value;  // integer placeholder for error checking
 
-    // TODO Debug message.
-    printf("process_info called\n");
-
     // process_stop requires a valid PID.
     if (string_pid == NULL) {
         printf("error, " ANSI_BOLD "info" ANSI_RESET " requires a valid PID\n");
@@ -945,9 +933,6 @@ int process_quit(process_t *list) {
     // variable declaration
     process_t *node;
     int return_value;  // integer placeholder for error checking
-
-    // TODO Debug message.
-    printf("process_quit called\n");
 
     // kill all processes.
     for (node = list->next; node != list; node = node->next) {
