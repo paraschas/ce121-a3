@@ -21,6 +21,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
+#include <errno.h>
 ////////////////////////////////////////////////////////////////////////////////
 
 // #define directives
@@ -36,6 +38,10 @@
 #define ANSI_RED "\x1b[31m"
 #define ANSI_BOLD "\x1b[1m"
 #define ANSI_RESET "\x1b[0m"
+
+#define SLEEP_SECONDS 0
+#define SLEEP_NANOSECONDS 100000000
+        // 100,000,000 nanoseconds, equal to 0.1 seconds.
 ////////////////////////////////////////////////////////////////////////////////
 
 // custom data types
@@ -452,7 +458,9 @@ int parent_signal_handling() {
     // Description
     // This function contains the signal handling code of the parent process
     // of the application. It blocks all signals, period.
+    // TODO
     // //except for SIGINT.
+    // except for SIGCHLD.
     //
     // Returns
     // parent_signal_handling returns 0 on successful completion or
@@ -460,6 +468,7 @@ int parent_signal_handling() {
 
     // variable declaration
     //struct sigaction action = { {0} };
+    struct sigaction action_sigchld = { {0} };
     sigset_t signals_set;
     int return_value;  // integer placeholder for error checking
 
@@ -475,6 +484,12 @@ int parent_signal_handling() {
     //    return -1;
     //}
 
+    return_value = sigdelset(&signals_set, SIGCHLD);
+    if (return_value == -1) {
+        perror("error, sigdelset");
+        return -1;
+    }
+
     return_value = sigprocmask(SIG_BLOCK, &signals_set, NULL);
     if (return_value == -1) {
         perror("error, sigprocmask");
@@ -488,6 +503,15 @@ int parent_signal_handling() {
     //    perror("error, sigaction");
     //    return -1;
     //}
+
+    // Stop terminated child processes from becoming defunct.
+    // Improved implementation of http://stackoverflow.com/a/6718997
+    action_sigchld.sa_handler = SIG_IGN;
+    return_value = sigaction(SIGCHLD, &action_sigchld, NULL);
+    if (return_value == -1) {
+        perror("error, sigaction");
+        return -1;
+    }
 
     return 0;
 }
@@ -620,6 +644,7 @@ int process_exec(process_t *processes, char *arguments[]) {
     // variable declaration
     int pid; // TODO Should it be pid_t instead?
     char path[MAX_PATH_LENGTH + 1];
+    struct timespec sleep_time;
     int return_value;  // integer placeholder for error checking
 
     // process_exec requires a valid path.
@@ -628,15 +653,11 @@ int process_exec(process_t *processes, char *arguments[]) {
         return 0;
     }
 
+    sleep_time.tv_sec = SLEEP_SECONDS;
+    sleep_time.tv_nsec = (long)SLEEP_NANOSECONDS;
+
     // Store the path to the executable file.
     strcpy(path, arguments[0]);
-
-    // TODO Maybe use this to check whether the child exited right after
-    // the exec*.
-    //return_value = unblock_child_signal();
-    //if (return_value == -1) {
-    //    printf("error, unblock_child_signal\n");
-    //}
 
     // fork
     return_value = (int)fork();
@@ -659,23 +680,34 @@ int process_exec(process_t *processes, char *arguments[]) {
         // parent code
         pid = return_value;
 
-        // TODO Verify that exec* successfully executed the file in path.
-        // Maybe check whether the child exited right after the exec*
-        // instruction?
-
-        return_value = list_add(processes, pid, path);
+        // Wait a short period of time before you check whether the child is
+        // still running. This could fail if the access to the file is too slow
+        // and, conceivably, for other reasons.
+        return_value = nanosleep(&sleep_time, NULL);
         if (return_value == -1) {
-            printf("error, list_add\n");
+            perror("error, nanosleep");
+            return -1;
         }
 
-        // TODO Maybe use this to check whether the child exited right after
-        // the exec*.
-        //return_value = block_child_signal();
-        //if (return_value == -1) {
-        //    printf("error, block_child_signal\n");
-        //}
+        // Perform error checking for sending a signal to the child process.
+        // http://stackoverflow.com/q/5460702
+        return_value = kill(pid, 0);
+        if (return_value == 0) {
+            // The process exists, the file probably executed successfully.
 
-        printf("process with PID %d spawned\n", pid);
+            return_value = list_add(processes, pid, path);
+            if (return_value == -1) {
+                printf("error, list_add\n");
+            }
+
+            printf("a process with PID %d was spawned\n", pid);
+        } else if (errno == ESRCH) {
+            printf("error in executing the program, or the program exited");
+            printf(" instantly; nothing was added to the process list\n");
+        } else {
+            perror("error, kill");
+            return -1;
+        }
     }
 
     return 0;

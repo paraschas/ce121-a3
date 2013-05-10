@@ -55,7 +55,7 @@ static void handler_sigusr1(int signal_received) {
 
     // variable declaration
 
-    printf("\n\ttimes, delay %d: %d outputs so far, doing great\n",
+    printf("\n!!! times, delay %d: %d outputs so far, doing great !!!\n",
             delay, counter);
 }
 ////////////////////////////////////////////////////////////////////////////////
