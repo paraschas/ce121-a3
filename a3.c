@@ -431,16 +431,30 @@ int list_search(process_t *list, process_t **result, int pid) {
     }
 }
 
+//static void handler_sigint(int signal) {
+//    // Description
+//    // This function is the signal handler for SIGINT.
+//    //
+//    // Returns
+//    // handler_sigint does not return any value.
+//
+//    // variable declaration
+//
+//    write(STDOUT_FILENO, "\nI can't let you do that, Dave.\n\n", 32);
+//}
+
 int parent_signal_handling() {
     // Description
     // This function contains the signal handling code of the parent process
-    // of the application. It blocks all signals.
+    // of the application. It blocks all signals, period.
+    // //except for SIGINT.
     //
     // Returns
     // parent_signal_handling returns 0 on successful completion or
     // -1 in case of failure.
 
     // variable declaration
+    //struct sigaction action = { {0} };
     sigset_t signals_set;
     int return_value;  // integer placeholder for error checking
 
@@ -450,11 +464,25 @@ int parent_signal_handling() {
         return -1;
     }
 
+    //return_value = sigdelset(&signals_set, SIGINT);
+    //if (return_value == -1) {
+    //    perror("error, sigdelset");
+    //    return -1;
+    //}
+
     return_value = sigprocmask(SIG_BLOCK, &signals_set, NULL);
     if (return_value == -1) {
         perror("error, sigprocmask");
         return -1;
     }
+
+    // TODO Results to an error in getline.
+    //action.sa_handler = handler_sigint;
+    //return_value = sigaction(SIGINT, &action, NULL);
+    //if (return_value == -1) {
+    //    perror("error, sigaction");
+    //    return -1;
+    //}
 
     return 0;
 }

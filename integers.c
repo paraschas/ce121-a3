@@ -36,7 +36,7 @@ static volatile sig_atomic_t delay = 4;  // number of seconds to wait between
 
 // functions
 ////////////////////////////////////////////////////////////////////////////////
-static void signal_handler(int signal_received) {
+static void handler_sigusr1(int signal_received) {
     // Description
     // This function is the signal handler for SIGUSR1.
     //
@@ -50,7 +50,7 @@ static void signal_handler(int signal_received) {
     // implementation.
     //
     // Returns
-    // signal_handler does not return any value.
+    // handler_sigusr1 does not return any value.
 
     // variable declaration
 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     struct sigaction action = { {0} };
     int return_value;  // integer placeholder for error checking
 
-    action.sa_handler = signal_handler;
+    action.sa_handler = handler_sigusr1;
     return_value = sigaction(SIGUSR1, &action, NULL);
     if (return_value == -1) {
         perror("error, sigaction");
