@@ -42,7 +42,7 @@ static void signal_handler(int signal_received) {
     //
     // NOTE
     // I'd prefer to avoid using the non async-signal-safe function printf here,
-    // but instead use write multiple times, calculating the length of counter
+    // and use write multiple times instead, calculating the length of counter
     // and delay values as strings with simple comparisons.
     //
     // NOTE
