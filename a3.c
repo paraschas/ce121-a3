@@ -9,9 +9,6 @@
 // The commands can be requested using just the first letter of their name.
 // Once compiled, the integers and times programs can be executed via their
 // i and t symbolic links, respectively.
-//
-// TODO
-// Search and do DO_IT tasks.
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
@@ -716,6 +713,8 @@ int process_kill(process_t *processes, char *string_pid) {
         if (return_value == -1) {
             printf("error, low_level_process_kill\n");
             return -1;
+        } else {
+            printf("the process with PID %d was killed\n", pid);
         }
     }
 
@@ -765,6 +764,8 @@ int process_stop(process_t *processes, char *string_pid) {
 
             // Set the stopped status of the process node to 1.
             process->stopped = 1;
+
+            printf("the process with PID %d was stopped\n", pid);
         } else {
             printf("the process with PID %d is already stopped\n", pid);
         }
@@ -816,6 +817,8 @@ int process_cont(process_t *processes, char *string_pid) {
 
             // Set the stopped status of the process node to 0.
             process->stopped = 0;
+
+            printf("the process with PID %d was resumed\n", pid);
         } else {
             printf("the process with PID %d is already running\n", pid);
         }
@@ -981,8 +984,8 @@ int task_queue() {
     int return_value;  // integer placeholder for error checking
     int i;  // generic counter
 
-    // DO_IT Clear the screen.
-    /*clear_screen();*/
+    // Clear the screen.
+    clear_screen();
 
     // Print a welcome message.
     printf(ANSI_BOLD "SCEE" ANSI_RESET " - ");
