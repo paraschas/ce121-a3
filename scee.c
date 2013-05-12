@@ -17,11 +17,6 @@
 // The commands can be requested using just the first letter of their name.
 // Once compiled, the integers and times programs can be executed via their
 // i and t symbolic links, respectively.
-//
-// TODO
-// One last thing I'd like to add is to automatically remove the entries of
-// processes that have terminated from the list of processes, when the list
-// command is run, and print the result of this operation.
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives
@@ -465,10 +460,8 @@ int list_search(process_t *list, process_t **result, int pid) {
 int parent_signal_handling() {
     // Description
     // This function contains the signal handling code of the parent process
-    // of the application. It blocks all signals, period.
-    // TODO
-    // //except for SIGINT.
-    // except for SIGCHLD.
+    // of the application. It blocks all signals, except for SIGCHLD.
+    // // TODO and SIGINT.
     //
     // Returns
     // parent_signal_handling returns 0 on successful completion or
@@ -676,11 +669,8 @@ int low_level_process_kill(process_t *process) {
 
     // TODO
     // I would like a check here of whether the process exists after several
-    // specified periods of time. If it does, it should be killed with
+    // specified periods of time. If it does, it could be killed with
     // kill((pid_t)process->pid, SIGKILL);
-
-    // NOTE
-    // I would like to stop killed child processes becoming defunct.
 
     // Remove its node from the list.
     return_value = list_remove(process);
@@ -842,8 +832,10 @@ int process_cont(process_t *processes, char *string_pid) {
 
 int process_list(process_t *list) {
     // Description
-    // This function prints a table of the process data, including its PID,
-    // its status, and the path used to execute the program.
+    // This function prints a table with information about the spawned running
+    // processes. It contains the processes PID, their status, and the path
+    // used to execute the program. The obsolete entries of the processes
+    // no longer existing are removed.
     //
     // Returns
     // process_list returns 0 on successful completion or -1 in case of failure.
@@ -851,15 +843,50 @@ int process_list(process_t *list) {
     // variable declaration
     process_t *node;
     char status[MAX_STATUS_LENGTH + 1];
+    int num_removed;  // The number of obsolete entries removed from the list.
+    int return_value;  // integer placeholder for error checking
 
     if (list == NULL) {
         // list should point to a valid list.
         return -1;
     }
 
+    // Check all entries of whether they are still current.
+    num_removed = 0;
+    for (node = list->next; node != list; node = node->next) {
+        // Perform error checking for sending a signal to the child process.
+        // http://stackoverflow.com/q/5460702
+        return_value = kill(node->pid, 0);
+        if (return_value == 0) {
+            // The process still exists.
+        } else if (errno == ESRCH) {
+            // The process doesn't exist.
+
+            // Remove its node from the list.
+            return_value = list_remove(node);
+            if (return_value == -1) {
+                printf("error, list_remove\n");
+                return -1;
+            }
+
+            num_removed++;
+        } else {
+            perror("error, kill");
+            return -1;
+        }
+    }
+
     printf("\n");
 
     // top border
+    printf("+-------------------");
+    printf("------------------------------------------------------------");
+    printf("\n");
+
+    // title
+    printf("|  spawned running processes\n");
+
+    // separator
     printf("+-------+----------+");
     printf("------------------------------------------------------------");
     printf("\n");
@@ -905,6 +932,12 @@ int process_list(process_t *list) {
     printf("+-------+----------+");
     printf("------------------------------------------------------------");
     printf("\n");
+
+    if (num_removed == 1) {
+        printf("\n1 obsolete process entry was removed\n\n");
+    } else if (num_removed > 1) {
+        printf("\n%d obsolete process entries were removed\n\n", num_removed);
+    }
 
     return 0;
 }
@@ -960,6 +993,10 @@ int process_info(process_t *processes, char *string_pid) {
 int process_quit(process_t *list) {
     // Description
     // This function kills all spawned processes that are still running.
+    //
+    // TODO There is no check here whether they are still running.
+    // This could be implemented by making a function, maybe named
+    // process_check, that does this check, that process_list could also use.
     //
     // Returns
     // process_quit returns 0 on successful completion or -1 in case of failure.
@@ -1041,6 +1078,8 @@ int task_queue() {
 
         if (strlen(raw_input) != 0) {
             strcpy(task, input[0]);
+        } else {
+            strcpy(task, "");
         }
 
         // Execute the command.
