@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Description
 // A simple program that prints to stdout the integers from 1 to 128 in
-// ascending order, one every 4 seconds or the number of seconds given as
+// ascending order, one every 4 seconds or the number of seconds passed as
 // an argument. This value must be in the range [1, 32].
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -16,7 +16,7 @@
 
 // #define directives
 ////////////////////////////////////////////////////////////////////////////////
-#define PROGRAM_DESCRIPTION "A simple program that prints to stdout the integers from 1 to 128 in ascending order, one every 4 seconds or the number of seconds given as an argument. This value must be in the range [1, 32]."
+#define PROGRAM_DESCRIPTION "A simple program that prints to stdout the integers from 1 to 128 in ascending order, one every 4 seconds or the number of seconds passed as an argument. This value must be in the range [1, 32]."
 ////////////////////////////////////////////////////////////////////////////////
 
 // custom data types

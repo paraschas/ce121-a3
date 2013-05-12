@@ -1,4 +1,4 @@
-// file a3.c
+// file scee.c
 ////////////////////////////////////////////////////////////////////////////////
 // Description
 // This application implements an execution environment in which signals are
@@ -19,8 +19,9 @@
 // i and t symbolic links, respectively.
 //
 // TODO
-// One last thing I'd like to add is to automatically remove the entries in
-// the process list of processes that have terminated, maybe once every second.
+// One last thing I'd like to add is to automatically remove the entries of
+// processes that have terminated from the list of processes, when the list
+// command is run, and print the result of this operation.
 ////////////////////////////////////////////////////////////////////////////////
 
 // #include directives

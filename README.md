@@ -1,8 +1,8 @@
 ce121, assignment 3, signal controlled execution environment
 ============================================================
 
-a3
---
+scee
+----
 This application implements an execution environment in which signals are used to stop, resume, terminate, and get information from spawned child processes, while a list of them is maintained and updated.
 
 supported commands
@@ -29,19 +29,25 @@ integers and times are simple auxiliary programs to be called by the main applic
 
 integers
 --------
-A simple program that prints to stdout the integers from 1 to 128 in ascending order, one every 4 seconds or the number of seconds given as an argument. This value must be in the range [1, 32].
+A simple program that prints to stdout the integers from 1 to 128 in ascending order, one every 4 seconds or the number of seconds passed as an argument. This value must be in the range [1, 32].
 
 seconds
 -------
-A simple program that prints to stdout the current time 128 times, once every 4 seconds or the number of seconds given as an argument. This value must be in the range [1, 32].
+A simple program that prints to stdout the current time 128 times, once every 4 seconds or the number of seconds passed as an argument. This value must be in the range [1, 32].
 
 course
 ======
-Programming II
+Programming 2 (system-level C programming)
 
 http://inf-server.inf.uth.gr/courses/CE121/
 
+http://www.inf.uth.gr/cced/?page_id=358
+
 spring 2013
+
+University of Thessaly
+
+http://www.inf.uth.gr/
 
 
 author
