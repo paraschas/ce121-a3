@@ -3,7 +3,18 @@ ce121, assignment 3, signal controlled execution environment
 
 a3
 --
-This application implements an execution environment in which signals are used to stop, resume, terminate, and get information from spawned child processes.
+This application implements an execution environment in which signals are used to stop, resume, terminate, and get information from spawned child processes, while a list of them is maintained and updated.
+
+supported commands
+exec, execute a file given its path and required arguments.
+kill, terminate a spawned process given its PID.
+stop, stop the execution of a running spawned process given its PID.
+cont, resume the execution of a stopped spawned process given its PID.
+list, print a list of the running spawned processes.
+info, request information about a spawned process given it PID.
+quit, terminate the application.
+
+The commands can be requested using just the first letter of their name.  Once compiled, the integers and times programs can be executed via their i and t symbolic links, respectively.
 
 integers, times
 ---------------
