@@ -1847,12 +1847,12 @@ int test_all() {
         num_passed++;
     }
 
-    // test_process_list
-    num_tests++;
-    return_value = test_process_list();
-    if (return_value == 0) {
-        num_passed++;
-    }
+    //// test_process_list
+    //num_tests++;
+    //return_value = test_process_list();
+    //if (return_value == 0) {
+    //    num_passed++;
+    //}
 
     if (num_passed == num_tests) {
         printf("\n");

@@ -49,7 +49,6 @@ University of Thessaly
 
 http://www.inf.uth.gr/
 
-
 author
 ======
 Dimitrios Paraschas
