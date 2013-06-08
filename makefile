@@ -3,14 +3,17 @@ CFLAGS = -Wall -g
 
 .PHONY: all
 
-all: a3 integers times
+all: scee integers times
 	@echo "done"
 
-a3:
-	$(CC) $(CFLAGS) a3.c -o a3
+scee: scee.c
+	$(CC) $(CFLAGS) scee.c -o scee
 
-integers:
+integers: integers.c
 	$(CC) $(CFLAGS) integers.c -o integers
 
-times:
+times: times.c
 	$(CC) $(CFLAGS) times.c -o times
+
+clean:
+	rm scee integers times
