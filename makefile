@@ -1,5 +1,7 @@
 CC = gcc
-CFLAGS = -Wall -g
+#CFLAGS = -Wall -g
+#CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -Werror -g
 
 .PHONY: all
 
